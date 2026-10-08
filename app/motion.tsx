@@ -99,7 +99,7 @@ export default function Motion() {
       // Section headings fill in letter by letter as you scroll past them.
       document.querySelectorAll<HTMLElement>('.title.fill').forEach(h => {
         SplitText.create(h, {
-          type: 'chars',
+          type: 'words,chars',
           onSplit: self => gsap.fromTo(self.chars, { opacity: 0.15 }, {
             opacity: 1, stagger: 0.05, ease: 'none',
             scrollTrigger: { trigger: h, start: 'top 85%', end: 'top 45%', scrub: true },
@@ -154,8 +154,8 @@ export default function Motion() {
       });
 
       // Candy wrappers swing in from opposite sides.
-      gsap.utils.toArray<HTMLElement>('.wrapper').forEach((w, i) => {
-        gsap.from(w, { x: i ? 140 : -140, rotate: i ? 10 : -10, opacity: 0, duration: 1.2, ease: 'expo.out', scrollTrigger: { trigger: w, start: 'top 85%' } });
+      gsap.utils.toArray<HTMLElement>('.gift-card').forEach((w, i) => {
+        gsap.from(w, { x: i ? 140 : -140, rotate: i ? 10 : -10, opacity: 0, duration: 1.2, ease: 'expo.out', clearProps: 'transform', scrollTrigger: { trigger: w, start: 'top 85%' } });
       });
 
       return () => {

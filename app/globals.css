@@ -133,6 +133,18 @@ ul,ol{margin:0;padding:0;list-style:none}
 .wrapper-print p{max-width:42ch;font-size:clamp(16px,1.15vw,20px);color:var(--pine-soft)}
 .wrapper-print .btn{margin-top:auto}
 
+/* ---------- 3D gift cards ---------- */
+.gift-card{position:relative;display:flex;flex-direction:column;overflow:hidden;border-radius:28px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line),0 30px 60px -40px rgba(23,49,43,.45);transform:perspective(1100px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:box-shadow .3s}
+.gift-card:hover{box-shadow:inset 0 0 0 1px var(--line),0 40px 70px -36px rgba(23,49,43,.55)}
+.gift-pine{background:linear-gradient(180deg,#e3eee7 0,#fff 62%)}
+.gift-berry{background:linear-gradient(180deg,#f8e6df 0,#fff 62%)}
+.gift-stage{position:relative;height:clamp(240px,24vw,340px)}
+.gift-stage canvas{display:block;width:100%;height:100%}
+.gift-text{display:flex;flex-direction:column;align-items:flex-start;gap:12px;padding:8px clamp(24px,3vw,40px) clamp(28px,3vw,40px)}
+.gift-text h3{font:700 clamp(22px,2vw,32px)/1.15 var(--display);letter-spacing:-.02em;color:var(--pine)}
+.gift-text p{max-width:40ch}
+.gift-text .link-arrow{margin-top:6px}
+
 /* ---------- Waybill reel: horizontal on desktop ---------- */
 .reel{background:var(--frost);overflow:hidden}
 .reel-pin{display:flex;flex-direction:column;justify-content:center;min-height:100vh;padding:clamp(90px,8vw,120px) 0 clamp(48px,5vw,72px)}

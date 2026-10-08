@@ -4,6 +4,7 @@ import { Wordmark } from './decor';
 import SiteFooter from './site-footer';
 import { COMPANY } from './company';
 import Motion from './motion';
+import Gifts3D from './gifts-3d';
 
 const base = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
 
@@ -174,8 +175,9 @@ export default function Home() {
             <h2 id="scenarios-title" className="title fill">Какие подарки собираем</h2>
             <div className="scenario-grid">
               {SCENARIOS.map(s => (
-                <article key={s.id} className={`wrapper wrapper-${s.tone}`}>
-                  <div className="wrapper-print">
+                <article key={s.id} className={`gift-card gift-${s.tone}`}>
+                  <Gifts3D scene={s.id} />
+                  <div className="gift-text">
                     <span className="eyebrow">{s.eyebrow}</span>
                     <h3>{s.title}</h3>
                     <p>{s.text}</p>
