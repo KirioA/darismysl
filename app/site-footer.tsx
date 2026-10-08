@@ -17,8 +17,8 @@ export default function SiteFooter({ home = false }: { home?: boolean }) {
           <h3>Разделы</h3>
           <ul>
             <li><a href={`${base}#scenarios`}>Наборы</a></li>
-            <li><a href={`${base}#order`}>Как заказать</a></li>
-            <li><a href={`${base}#price`}>Из чего цена</a></li>
+            <li><a href={`${base}#steps`}>Как работаем</a></li>
+            <li><a href={`${base}#terms`}>Условия</a></li>
             <li><a href={`${base}#faq`}>Вопросы</a></li>
             <li><a href={`${base}#contact`}>Оставить заявку</a></li>
           </ul>

@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next';
-import '@fontsource/unbounded/cyrillic-800.css';
-import '@fontsource/unbounded/latin-800.css';
+import '@fontsource/unbounded/cyrillic-700.css';
+import '@fontsource/unbounded/latin-700.css';
 import '@fontsource/golos-text/cyrillic-400.css';
 import '@fontsource/golos-text/cyrillic-600.css';
 import '@fontsource/golos-text/latin-400.css';
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   openGraph: { title: 'ДариСмысл — подарочные наборы оптом', description, locale: 'ru_BY', type: 'website', images: [`${base}/hero-poster.jpg`] },
 };
 
-export const viewport: Viewport = { themeColor: '#eef3f0' };
+export const viewport: Viewport = { themeColor: '#f6f8f5' };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return <html lang="ru"><body>{children}</body></html>;

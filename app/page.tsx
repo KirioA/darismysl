@@ -2,21 +2,20 @@ import FooterBackground from './footer-background';
 import LeadForm from './lead-form';
 import { Wordmark } from './decor';
 import SiteFooter from './site-footer';
-import { IconBox, IconCheck, IconForm, IconTruck } from './art';
 import { COMPANY } from './company';
 import Motion from './motion';
 
 const SCENARIOS = [
   {
     id: 'corporate',
-    tone: 'pine',
+    eyebrow: 'Для компаний',
     title: 'Сотрудникам и партнёрам',
     text: 'Состав под повод и бюджет, ваш логотип на упаковке.',
     cta: 'Собрать набор',
   },
   {
     id: 'kids',
-    tone: 'berry',
+    eyebrow: 'Для профсоюзов',
     title: 'Детям сотрудников',
     text: 'Сладкие подарки для профсоюзов — состав под возраст.',
     cta: 'Собрать подарки',
@@ -24,10 +23,10 @@ const SCENARIOS = [
 ] as const;
 
 const STEPS = [
-  { title: 'Заявка', text: 'Количество, бюджет и дата.', Icon: IconForm },
-  { title: 'Состав и цена', text: 'Подбираем и согласуем с вами.', Icon: IconCheck },
-  { title: 'Сборка', text: 'Закупаем и собираем сами.', Icon: IconBox },
-  { title: 'Доставка', text: 'По Беларуси к вашей дате.', Icon: IconTruck },
+  { title: 'Заявка', text: 'Количество, бюджет и дата.' },
+  { title: 'Состав и цена', text: 'Подбираем и согласуем с вами.' },
+  { title: 'Сборка', text: 'Закупаем и собираем сами.' },
+  { title: 'Доставка', text: 'По Беларуси к вашей дате.' },
 ];
 
 const PRICE = ['Конфеты и наполнение', 'Упаковка', 'Логотип, если нужен', 'Сборка', 'Доставка'];
@@ -87,7 +86,7 @@ export default function Home() {
               </p>
               <div className="hero-actions">
                 <a className="btn btn-berry" href="#contact">Рассчитать набор</a>
-                <a className="btn btn-ghost" href="#steps">Как мы работаем</a>
+                <a className="link-arrow" href="#steps">Как мы работаем</a>
               </div>
             </div>
 
@@ -112,12 +111,11 @@ export default function Home() {
             <h2 id="scenarios-title" className="title" data-rise>Какие подарки собираем</h2>
             <div className="scenario-grid">
               {SCENARIOS.map(s => (
-                <article key={s.id} className={`wrapper wrapper-${s.tone}`} data-rise>
-                  <div className="wrapper-print">
-                    <h3>{s.title}</h3>
-                    <p>{s.text}</p>
-                    <a className="btn btn-ink" href={`?type=${s.id}#contact`}>{s.cta}</a>
-                  </div>
+                <article key={s.id} className="card" data-rise>
+                  <span className="eyebrow">{s.eyebrow}</span>
+                  <h3>{s.title}</h3>
+                  <p>{s.text}</p>
+                  <a className="link-arrow" href={`?type=${s.id}#contact`}>{s.cta}</a>
                 </article>
               ))}
             </div>
@@ -128,10 +126,9 @@ export default function Home() {
           <div className="wrap">
             <h2 id="steps-title" className="title" data-rise>Как работаем</h2>
             <ol className="steps">
-              {STEPS.map(({ title, text, Icon }, i) => (
+              {STEPS.map(({ title, text }, i) => (
                 <li key={title} data-rise style={{ '--i': i } as React.CSSProperties}>
-                  <span className="step-n">{i + 1}</span>
-                  <Icon className="step-icon" />
+                  <span className="step-n">{String(i + 1).padStart(2, '0')}</span>
                   <h3>{title}</h3>
                   <p>{text}</p>
                 </li>
@@ -146,7 +143,7 @@ export default function Home() {
             <div className="terms">
               <div className="terms-col" data-rise>
                 <h3>Из чего цена</h3>
-                <ul>{PRICE.map(p => <li key={p}>{p}</li>)}</ul>
+                <ul className="hairlist">{PRICE.map(p => <li key={p}>{p}</li>)}</ul>
                 <p className="terms-note">
                   {COMPANY.priceFrom ? `Набор ${COMPANY.priceFrom}. ` : ''}
                   {COMPANY.minOrder ? `Партия ${COMPANY.minOrder}. ` : ''}
@@ -155,7 +152,7 @@ export default function Home() {
               </div>
               <div className="terms-col" data-rise>
                 <h3>Для бухгалтерии</h3>
-                <ul>{PAPERS.map(p => <li key={p}>{p}</li>)}</ul>
+                <ul className="hairlist">{PAPERS.map(p => <li key={p}>{p}</li>)}</ul>
               </div>
             </div>
           </div>

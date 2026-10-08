@@ -3,12 +3,11 @@
 import { useEffect } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { SplitText } from 'gsap/SplitText';
 import Lenis from 'lenis';
 
-gsap.registerPlugin(ScrollTrigger, SplitText);
+gsap.registerPlugin(ScrollTrigger);
 
-// Calm motion: smooth scroll, a soft hero entrance and gentle reveals.
+// Calm motion: smooth scroll and short reveals (y 16, 0.6s); only the mascot moves on its own.
 // Content is visible without JS; reduced motion keeps only the nav behaviour.
 export default function Motion() {
   useEffect(() => {
@@ -32,18 +31,10 @@ export default function Motion() {
       gsap.ticker.add(raf);
       gsap.ticker.lagSmoothing(0);
 
-      const intro = gsap.timeline({ defaults: { ease: 'expo.out' } });
-      SplitText.create('.hero-title .split', {
-        type: 'words',
-        mask: 'words',
-        onSplit: self => { intro.from(self.words, { yPercent: 100, duration: 1.1, stagger: 0.06 }, 0); },
-      });
-      intro
-        .from('.hero-lead, .hero-actions', { y: 20, opacity: 0, duration: 0.9, stagger: 0.08 }, 0.35)
-        .from('.parcel', { y: 40, opacity: 0, duration: 1.2 }, 0.2);
+      gsap.from('.hero-title .split, .hero-lead, .hero-actions, .parcel', { y: 16, opacity: 0, duration: 0.6, stagger: 0.06, ease: 'power2.out', delay: 0.1 });
 
       gsap.utils.toArray<HTMLElement>('[data-rise]').forEach(el => {
-        gsap.from(el, { y: 32, opacity: 0, duration: 0.9, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 90%' } });
+        gsap.from(el, { y: 16, opacity: 0, duration: 0.6, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 90%' } });
       });
 
       return () => {
