@@ -96,6 +96,29 @@ export default function Motion() {
         });
       });
 
+      // Section headings fill in letter by letter as you scroll past them.
+      document.querySelectorAll<HTMLElement>('.title.fill').forEach(h => {
+        SplitText.create(h, {
+          type: 'chars',
+          onSplit: self => gsap.fromTo(self.chars, { opacity: 0.15 }, {
+            opacity: 1, stagger: 0.05, ease: 'none',
+            scrollTrigger: { trigger: h, start: 'top 85%', end: 'top 45%', scrub: true },
+          }),
+        });
+      });
+
+      // The seal spins slowly and speeds up with scroll velocity.
+      const seal = document.querySelector('.seal');
+      if (seal) {
+        const spin = gsap.to(seal, { rotation: 360, duration: 18, ease: 'none', repeat: -1 });
+        ScrollTrigger.create({
+          onUpdate: self => {
+            spin.timeScale(1 + Math.min(Math.abs(self.getVelocity()) / 300, 6));
+            gsap.to(spin, { timeScale: 1, duration: 0.8, overwrite: true });
+          },
+        });
+      }
+
       // Generic rise for blocks.
       gsap.utils.toArray<HTMLElement>('[data-rise]').forEach(el => {
         gsap.from(el, { y: 60, rotate: 1.2, opacity: 0, duration: 1, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 88%' } });

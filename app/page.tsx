@@ -20,8 +20,32 @@ const STEPS = [
   { title: 'Доставка', text: 'По Беларуси к вашей дате.', stamp: 'Отгрузим' },
 ];
 
-const PRICE = ['Конфеты и наполнение', 'Упаковка', 'Логотип, если нужен', 'Сборка', 'Доставка'];
-const PAPERS = ['Договор', 'Безналичная оплата', 'Закрывающие документы', 'Доставка по Беларуси'];
+const PRICE = [
+  ['Конфеты и наполнение', 'под бюджет'],
+  ['Упаковка', 'под повод'],
+  ['Логотип', 'по желанию'],
+  ['Сборка', 'своими силами'],
+  ['Доставка', 'по Беларуси'],
+] as const;
+const PAPERS = [
+  ['Договор', 'есть'],
+  ['Оплата', 'безналичная'],
+  ['Документы', 'закрывающие'],
+  ['Отгрузка', 'к вашей дате'],
+] as const;
+
+// Round seal that spins; the text runs along a circle.
+function Seal() {
+  return (
+    <svg className="seal" viewBox="0 0 200 200" aria-hidden="true">
+      <defs><path id="seal-path" d="M100 100m-78 0a78 78 0 1 1 156 0a78 78 0 1 1 -156 0" /></defs>
+      <circle cx="100" cy="100" r="96" fill="none" stroke="currentColor" strokeWidth="2" />
+      <circle cx="100" cy="100" r="58" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <text><textPath href="#seal-path">ДАРИМ СМЫСЛ · СОБИРАЕМ ПРАЗДНИК · </textPath></text>
+      <path d="M100 76l6 18h19l-15 11 6 18-16-11-16 11 6-18-15-11h19z" fill="currentColor" />
+    </svg>
+  );
+}
 
 const FAQ = [
   { q: 'Соберёте под наш бюджет?', a: 'Да. Назовите бюджет на один набор и количество — предложим состав.' },
@@ -147,7 +171,7 @@ export default function Home() {
 
         <section className="scenarios" id="scenarios" aria-labelledby="scenarios-title">
           <div className="wrap">
-            <h2 id="scenarios-title" className="title split">Какие подарки собираем</h2>
+            <h2 id="scenarios-title" className="title fill">Какие подарки собираем</h2>
             <div className="scenario-grid">
               {SCENARIOS.map(s => (
                 <article key={s.id} className={`wrapper wrapper-${s.tone}`}>
@@ -168,7 +192,7 @@ export default function Home() {
         <section className="reel" id="steps" aria-labelledby="steps-title">
           <div className="reel-pin">
             <div className="wrap reel-head">
-              <h2 id="steps-title" className="title split">Как работаем</h2>
+              <h2 id="steps-title" className="title fill">Как работаем</h2>
               <span className="reel-bar" aria-hidden="true"><i /></span>
             </div>
             <ol className="reel-track">
@@ -186,11 +210,11 @@ export default function Home() {
 
         <section className="terms-sec" id="terms" aria-labelledby="terms-title">
           <div className="wrap">
-            <h2 id="terms-title" className="title split">Условия</h2>
+            <h2 id="terms-title" className="title fill">Условия</h2>
             <div className="terms">
               <div className="terms-col" data-rise>
                 <h3>Из чего цена</h3>
-                <ul className="hairlist">{PRICE.map(p => <li key={p}>{p}</li>)}</ul>
+                <ul className="pricelist">{PRICE.map(([k, v]) => <li key={k}><span>{k}</span><i aria-hidden="true" /><em>{v}</em></li>)}</ul>
                 <p className="terms-note">
                   {COMPANY.priceFrom ? `Набор ${COMPANY.priceFrom}. ` : ''}
                   {COMPANY.minOrder ? `Партия ${COMPANY.minOrder}. ` : ''}
@@ -199,7 +223,7 @@ export default function Home() {
               </div>
               <div className="terms-col" data-rise>
                 <h3>Для бухгалтерии</h3>
-                <ul className="hairlist">{PAPERS.map(p => <li key={p}>{p}</li>)}</ul>
+                <ul className="pricelist">{PAPERS.map(([k, v]) => <li key={k}><span>{k}</span><i aria-hidden="true" /><em>{v}</em></li>)}</ul>
               </div>
             </div>
           </div>
@@ -209,7 +233,7 @@ export default function Home() {
 
         <section className="faq-sec" id="faq" aria-labelledby="faq-title">
           <div className="wrap faq-in">
-            <h2 id="faq-title" className="title split">Вопросы</h2>
+            <h2 id="faq-title" className="title fill">Вопросы</h2>
             <div className="faq">
               {FAQ.map(item => (
                 <details key={item.q} data-rise>
@@ -224,6 +248,7 @@ export default function Home() {
         <section className="contact" id="contact" aria-labelledby="contact-title">
           <div className="wrap contact-in">
             <div className="contact-intro" data-rise>
+              <Seal />
               <h2 id="contact-title" className="title">Заявка</h2>
               <p>Ответим с составом, ценой и сроками.</p>
               <p><a href={`tel:${COMPANY.phone}`}>{COMPANY.phoneView}</a></p>

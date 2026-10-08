@@ -178,6 +178,16 @@ ul,ol{margin:0;padding:0;list-style:none}
   .faq details[open]::details-content{height:auto}
 }
 
+/* price-list rows with dotted leaders */
+.pricelist{margin-top:12px}
+.pricelist li{display:flex;align-items:baseline;gap:12px;padding:14px 0;border-bottom:1px solid rgba(238,243,240,.16)}
+.pricelist i{flex:1;border-bottom:2px dotted rgba(238,243,240,.3);transform:translateY(-5px)}
+.pricelist em{font-style:normal;color:var(--honey);font-weight:600;text-align:right}
+
+/* rotating seal */
+.seal{display:block;width:clamp(110px,10vw,150px);height:auto;margin-bottom:20px;color:var(--berry);font:700 15px/1 var(--display);letter-spacing:.12em}
+.seal text{fill:currentColor}
+
 /* ---------- Contact form ---------- */
 .contact-in{display:grid;grid-template-columns:.7fr 1.3fr;gap:clamp(32px,6vw,96px);align-items:start}
 .contact-intro p{margin-top:16px;max-width:30ch}
