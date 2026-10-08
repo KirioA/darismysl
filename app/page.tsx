@@ -5,28 +5,19 @@ import SiteFooter from './site-footer';
 import { COMPANY } from './company';
 import Motion from './motion';
 
+const base = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
+
 const SCENARIOS = [
-  {
-    id: 'corporate',
-    eyebrow: 'Для компаний',
-    title: 'Сотрудникам и партнёрам',
-    text: 'Состав под повод и бюджет, ваш логотип на упаковке.',
-    cta: 'Собрать набор',
-  },
-  {
-    id: 'kids',
-    eyebrow: 'Для профсоюзов',
-    title: 'Детям сотрудников',
-    text: 'Сладкие подарки для профсоюзов — состав под возраст.',
-    cta: 'Собрать подарки',
-  },
+  { id: 'corporate', tone: 'pine', eyebrow: 'Для компаний', title: 'Сотрудникам и партнёрам', text: 'Состав под повод и бюджет, ваш логотип на упаковке.', cta: 'Собрать набор' },
+  { id: 'kids', tone: 'berry', eyebrow: 'Для профсоюзов', title: 'Детям сотрудников', text: 'Сладкие подарки для профсоюзов — состав под возраст.', cta: 'Собрать подарки' },
 ] as const;
 
+// Stamp outline carries the state: dashed = the visitor's move, solid = what we take on.
 const STEPS = [
-  { title: 'Заявка', text: 'Количество, бюджет и дата.' },
-  { title: 'Состав и цена', text: 'Подбираем и согласуем с вами.' },
-  { title: 'Сборка', text: 'Закупаем и собираем сами.' },
-  { title: 'Доставка', text: 'По Беларуси к вашей дате.' },
+  { title: 'Заявка', text: 'Количество, бюджет и дата.', stamp: 'Ваш ход', yours: true },
+  { title: 'Состав и цена', text: 'Подбираем и согласуем с вами.', stamp: 'Согласуем' },
+  { title: 'Сборка', text: 'Закупаем и собираем сами.', stamp: 'Соберём' },
+  { title: 'Доставка', text: 'По Беларуси к вашей дате.', stamp: 'Отгрузим' },
 ];
 
 const PRICE = ['Конфеты и наполнение', 'Упаковка', 'Логотип, если нужен', 'Сборка', 'Доставка'];
@@ -46,6 +37,40 @@ const NAV = [
   ['#faq', 'Вопросы'],
 ] as const;
 
+// Floating decor around the hero: candies and stars that drift with the cursor.
+const FLOATERS = [
+  { kind: 'candy', tone: '#c8423a', x: 40, y: 88, s: 64, r: -18, d: 0.6 },
+  { kind: 'star', tone: '#e8b654', x: 46, y: 12, s: 34, r: 0, d: 1.2 },
+  { kind: 'candy', tone: '#22453c', x: 55, y: 8, s: 54, r: 24, d: 0.9 },
+  { kind: 'star', tone: '#c8423a', x: 92, y: 10, s: 26, r: 0, d: 1.5 },
+  { kind: 'candy', tone: '#e8b654', x: 94, y: 70, s: 58, r: -30, d: 0.7 },
+  { kind: 'star', tone: '#22453c', x: 3, y: 74, s: 30, r: 0, d: 1.3 },
+] as const;
+
+function Floater({ kind, tone, x, y, s, r, d }: (typeof FLOATERS)[number]) {
+  const style = { left: `${x}%`, top: `${y}%`, width: s, '--r': `${r}deg` } as React.CSSProperties;
+  return kind === 'candy' ? (
+    <svg className="floater" data-depth={d} style={style} viewBox="0 0 120 60" aria-hidden="true">
+      <path d="M30 30L4 8v44zM90 30l26-22v44z" fill={tone} opacity=".75" />
+      <rect x="26" y="12" width="68" height="36" rx="18" fill={tone} />
+      <path d="M44 14v32M60 13v34M76 14v32" stroke="#fff" strokeOpacity=".35" strokeWidth="5" />
+    </svg>
+  ) : (
+    <svg className="floater" data-depth={d} style={style} viewBox="0 0 40 40" aria-hidden="true">
+      <path d="M20 0l5 15 15 5-15 5-5 15-5-15L0 20l15-5z" fill={tone} />
+    </svg>
+  );
+}
+
+// Giant outlined words that slide sideways as the page scrolls.
+function Marquee({ words, dir = 1 }: { words: string; dir?: 1 | -1 }) {
+  return (
+    <div className="marquee" data-dir={dir} aria-hidden="true">
+      <span>{words} · {words} · {words} · </span>
+    </div>
+  );
+}
+
 // Structured data for search engines: only facts from company.ts.
 const ORG_LD = {
   '@context': 'https://schema.org',
@@ -63,6 +88,7 @@ export default function Home() {
     <>
       <Motion />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG_LD) }} />
+      <div className="wipe" aria-hidden="true" />
 
       <header className="nav">
         <a href="#top" className="nav-logo" aria-label={`${COMPANY.brand} — наверх`}><Wordmark tone="dark" /></a>
@@ -71,15 +97,20 @@ export default function Home() {
         </nav>
         <a className="nav-phone" href={`tel:${COMPANY.phone}`}>{COMPANY.phoneView}</a>
         <a className="btn btn-berry nav-cta" href="#contact">Заявка</a>
+        <span className="nav-progress" aria-hidden="true" />
       </header>
 
       <main id="top">
         <section className="hero" aria-labelledby="hero-title">
+          <div className="floaters">{FLOATERS.map((f, i) => <Floater key={i} {...f} />)}</div>
           <div className="wrap hero-in">
             <div className="hero-copy">
               <h1 id="hero-title" className="hero-title">
-                <span className="split">Дарим смысл.</span>{' '}
-                <span className="split l2">Собираем праздник.</span>
+                <span className="l1 split">Дарим смысл.</span>
+                <span className="h1-pill" aria-hidden="true">
+                  <video muted loop playsInline autoPlay preload="metadata" poster={`${base}/hero-poster.jpg`} src={`${base}/hero-loop.mp4`} />
+                </span>
+                <span className="l2 split">Собираем праздник.</span>
               </h1>
               <p className="hero-lead">
                 Подарочные наборы оптом для компаний и профсоюзов — с вашим логотипом и доставкой по Беларуси.
@@ -93,6 +124,7 @@ export default function Home() {
             <div className="parcel" aria-hidden="true">
               <div className="parcel-box">
                 <div className="parcel-window"><FooterBackground /></div>
+                <span className="parcel-flap" />
                 <span className="parcel-ribbon parcel-ribbon-top" />
                 <span className="parcel-ribbon parcel-ribbon-v" />
                 <span className="parcel-ribbon parcel-ribbon-h" />
@@ -102,35 +134,50 @@ export default function Home() {
                   <rect x="52" y="27" width="16" height="16" rx="4" fill="#a8352e" />
                 </svg>
               </div>
+              <div className="parcel-tag">
+                <span>Получатель</span>
+                <strong>ваша команда</strong>
+                <span>Отправитель</span>
+                <strong>{COMPANY.brand}</strong>
+              </div>
+              <span className="stamp stamp-hero">Соберём<br />под вас</span>
             </div>
           </div>
         </section>
 
         <section className="scenarios" id="scenarios" aria-labelledby="scenarios-title">
           <div className="wrap">
-            <h2 id="scenarios-title" className="title" data-rise>Какие подарки собираем</h2>
+            <h2 id="scenarios-title" className="title split">Какие подарки собираем</h2>
             <div className="scenario-grid">
               {SCENARIOS.map(s => (
-                <article key={s.id} className="card" data-rise>
-                  <span className="eyebrow">{s.eyebrow}</span>
-                  <h3>{s.title}</h3>
-                  <p>{s.text}</p>
-                  <a className="link-arrow" href={`?type=${s.id}#contact`}>{s.cta}</a>
+                <article key={s.id} className={`wrapper wrapper-${s.tone}`}>
+                  <div className="wrapper-print">
+                    <span className="eyebrow">{s.eyebrow}</span>
+                    <h3>{s.title}</h3>
+                    <p>{s.text}</p>
+                    <a className="link-arrow" href={`?type=${s.id}#contact`}>{s.cta}</a>
+                  </div>
                 </article>
               ))}
             </div>
           </div>
         </section>
 
-        <section className="steps-sec" id="steps" aria-labelledby="steps-title">
-          <div className="wrap">
-            <h2 id="steps-title" className="title" data-rise>Как работаем</h2>
-            <ol className="steps">
-              {STEPS.map(({ title, text }, i) => (
-                <li key={title} data-rise style={{ '--i': i } as React.CSSProperties}>
-                  <span className="step-n">{String(i + 1).padStart(2, '0')}</span>
+        <Marquee words="Подарки с логотипом" />
+
+        <section className="reel" id="steps" aria-labelledby="steps-title">
+          <div className="reel-pin">
+            <div className="wrap reel-head">
+              <h2 id="steps-title" className="title split">Как работаем</h2>
+              <span className="reel-bar" aria-hidden="true"><i /></span>
+            </div>
+            <ol className="reel-track">
+              {STEPS.map(({ title, text, stamp, yours }, i) => (
+                <li key={title} className="reel-card">
+                  <span className="reel-n">{String(i + 1).padStart(2, '0')}</span>
                   <h3>{title}</h3>
                   <p>{text}</p>
+                  <span className={`stamp${yours ? ' stamp-yours' : ''}`} aria-hidden="true">{stamp}</span>
                 </li>
               ))}
             </ol>
@@ -139,7 +186,7 @@ export default function Home() {
 
         <section className="terms-sec" id="terms" aria-labelledby="terms-title">
           <div className="wrap">
-            <h2 id="terms-title" className="title" data-rise>Условия</h2>
+            <h2 id="terms-title" className="title split">Условия</h2>
             <div className="terms">
               <div className="terms-col" data-rise>
                 <h3>Из чего цена</h3>
@@ -158,9 +205,11 @@ export default function Home() {
           </div>
         </section>
 
+        <Marquee words="Собираем праздник" dir={-1} />
+
         <section className="faq-sec" id="faq" aria-labelledby="faq-title">
           <div className="wrap faq-in">
-            <h2 id="faq-title" className="title" data-rise>Вопросы</h2>
+            <h2 id="faq-title" className="title split">Вопросы</h2>
             <div className="faq">
               {FAQ.map(item => (
                 <details key={item.q} data-rise>
