@@ -52,6 +52,8 @@ function Hat() {
   );
 }
 
+const base = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
+
 export default function FooterBackground() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
@@ -140,9 +142,9 @@ export default function FooterBackground() {
   return (
     <div className="footer-background" aria-hidden="true">
       {/* Phones only loop the clip, so they get a light encode; desktop needs the all-intra file for instant seeks. */}
-      <video ref={videoRef} muted playsInline preload="auto" poster="/hero-poster.jpg">
-        <source src="/hero-loop.mp4" type="video/mp4" media="(max-width: 700px)" />
-        <source src="/footer-scrub.mp4" type="video/mp4" />
+      <video ref={videoRef} muted playsInline preload="auto" poster={`${base}/hero-poster.jpg`}>
+        <source src={`${base}/hero-loop.mp4`} type="video/mp4" media="(max-width: 700px)" />
+        <source src={`${base}/footer-scrub.mp4`} type="video/mp4" />
       </video>
       <div className="stage" ref={stageRef}><Hat /></div>
     </div>

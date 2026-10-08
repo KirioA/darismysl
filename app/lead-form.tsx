@@ -23,7 +23,7 @@ export default function LeadForm() {
     const data = Object.fromEntries(new FormData(form));
     setStatus('sending');
     try {
-      const res = await fetch('/api/lead', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/api/lead`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         // Proof of consent: the operator must be able to prove it (Law No. 99-Z, art. 5),
