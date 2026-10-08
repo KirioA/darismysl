@@ -9,6 +9,9 @@ export const COMPANY = {
   // Fill in when available; the footer and documents show these only if they are set.
   email: null as string | null,
   tradeRegister: null as string | null, // e.g. 'В Торговом реестре с 01.07.2025, № 000000'
+  // Shown on the site only when set, e.g. 'от 20 наборов' / 'от 25 BYN за набор'.
+  minOrder: null as string | null,
+  priceFrom: null as string | null,
   // Versions of the legal texts; sent with every request as proof of consent.
   consentVersion: '2026-10-08',
   policyDate: '8 октября 2026 г.',

@@ -1,224 +1,248 @@
 import FooterBackground from './footer-background';
 import LeadForm from './lead-form';
-import { Drift, Garland, Snow, Sparkles, Wordmark } from './decor';
+import { Wordmark } from './decor';
 import SiteFooter from './site-footer';
-import {
-  ArtDefs, CandyCane, FirBranch, GiftBox, IconBow, IconBox, IconCandy, IconCart, IconCheck, IconDoc,
-  IconForm, IconStack, IconTruck, Lollipop, Snowflake, Star, WrappedCandy,
-} from './art';
+import { IconBox, IconCandy, IconCheck, IconForm, IconTruck } from './art';
+import { COMPANY } from './company';
 
-const STEPS = [
-  { title: 'Заявка', text: 'Расскажите, что нужно: сколько наборов, на какой бюджет и к какой дате.', Icon: IconForm },
-  { title: 'Состав', text: 'Подбираем конфеты, упаковку и наполнение под ваш повод и получателей.', Icon: IconCandy },
-  { title: 'Согласование', text: 'Показываем состав набора, согласуем детали и стоимость.', Icon: IconCheck },
-  { title: 'Сборка и отгрузка', text: 'Собираем наборы и отгружаем к согласованной дате.', Icon: IconBox },
+const SCENARIOS = [
+  {
+    id: 'corporate',
+    tone: 'pine',
+    title: 'Сотрудникам, клиентам и партнёрам',
+    text: 'Состав под повод и бюджет, ваш логотип на упаковке. Один набор для всех или разные — для команды и для партнёров.',
+    cta: 'Собрать корпоративный набор',
+  },
+  {
+    id: 'kids',
+    tone: 'ribbon',
+    title: 'Детские сладкие подарки',
+    text: 'Сладкие новогодние подарки для детей сотрудников — для профсоюзов и организаций. Подберём состав под возраст и бюджет.',
+    cta: 'Собрать детские подарки',
+  },
+] as const;
+
+// Stamp outline carries the state: dashed = the visitor's move, solid = what we take on.
+const ORDER = [
+  { title: 'Заявка', text: 'Пишете, кому подарки, сколько наборов, бюджет на один набор и к какой дате.', Icon: IconForm, stamp: 'Ваш ход', yours: true },
+  { title: 'Состав', text: 'Подбираем конфеты, упаковку и наполнение под повод, получателей и бюджет.', Icon: IconCandy, stamp: 'Подберём' },
+  { title: 'Согласование', text: 'Показываем состав и стоимость, согласуем логотип на упаковке и сроки.', Icon: IconCheck, stamp: 'Согласуем' },
+  { title: 'Сборка', text: 'Сами закупаем, собираем и упаковываем наборы — без посредников.', Icon: IconBox, stamp: 'Соберём' },
+  { title: 'Отгрузка', text: 'Отгружаем к согласованной дате с доставкой по Беларуси.', Icon: IconTruck, stamp: 'Отгрузим' },
 ];
 
-const TERMS = [
-  { title: 'Состав под вас', text: 'Конфеты, упаковку и наполнение подбираем под бюджет, вкус получателей и повод.', Icon: IconCandy },
-  { title: 'Объём — какой нужен', text: 'Размер партии обсуждаем индивидуально. Расскажите, сколько наборов вам нужно.', Icon: IconStack },
-  { title: 'Сборка и отгрузка', text: 'Закупаем, соединяем и собираем наборы сами, а затем отгружаем к нужной дате.', Icon: IconTruck },
-  { title: 'Для компаний', text: 'Работаем с организациями. Детали оплаты и документов обсудим при оформлении заказа.', Icon: IconDoc },
+const PRICE = [
+  { item: 'Конфеты и наполнение', note: 'вес и состав под бюджет' },
+  { item: 'Упаковка', note: 'вид и размер под повод' },
+  { item: 'Логотип на упаковке', note: 'если нужен' },
+  { item: 'Сборка наборов', note: 'своими силами' },
+  { item: 'Доставка', note: 'по всей Беларуси' },
 ];
 
-const WAY = [
-  { label: 'Закупаем', Icon: IconCart },
-  { label: 'Собираем', Icon: IconBox },
-  { label: 'Упаковываем', Icon: IconBow },
-  { label: 'Отгружаем', Icon: IconTruck },
+const PAPERS = [
+  { title: 'Договор', text: 'Работаем с организациями по договору.' },
+  { title: 'Безналичная оплата', text: 'Оплата по счёту от юридического лица.' },
+  { title: 'Закрывающие документы', text: 'Комплект документов для бухгалтерии и профкома.' },
+  { title: 'Доставка по Беларуси', text: 'Отгружаем в любой город к согласованной дате.' },
 ];
 
 const FAQ = [
-  { q: 'Что вы продаёте?', a: 'Подарочные наборы оптом. Конфеты, упаковку и наполнение мы закупаем и собираем в набор под задачу заказчика.' },
-  { q: 'Можно ли собрать набор под наш бюджет?', a: 'Да. Назовите бюджет и количество наборов, и мы предложим подходящий состав.' },
+  { q: 'Что вы продаёте?', a: 'Подарочные наборы оптом. Конфеты, упаковку и наполнение мы закупаем сами и собираем в наборы под задачу заказчика.' },
+  { q: 'Можно ли собрать набор под наш бюджет?', a: 'Да. Назовите бюджет на один набор и количество — предложим подходящий состав.' },
+  { q: 'Можно нанести наш логотип?', a: 'Да, нанесём логотип на упаковку. Вариант нанесения и макет согласуем до сборки.' },
+  { q: 'Собираете детские подарки для профсоюза?', a: 'Да, собираем сладкие новогодние подарки для детей сотрудников и подбираем состав под возраст.' },
+  { q: 'Доставляете по Беларуси?', a: 'Да, отгружаем по всей Беларуси к согласованной дате.' },
   { q: 'Как быстро можно получить заказ?', a: 'Срок зависит от состава и объёма, назовём его после заявки. Перед Новым годом спрос высокий, поэтому лучше оформить заказ заранее.' },
-  { q: 'Как рассчитывается стоимость?', a: 'Цена зависит от состава, упаковки и количества наборов. Рассчитаем её после того, как вы оставите заявку.' },
-  { q: 'Как оставить заявку?', a: 'Заполните форму внизу страницы. Мы свяжемся с вами и уточним детали.' },
+  { q: 'Как рассчитывается стоимость?', a: 'Цена складывается из состава, упаковки, нанесения логотипа, сборки и доставки. Расчёт пришлём после заявки.' },
 ];
 
-const at = (left: number, bottom: number, width: number, rotate = 0, flip = false): React.CSSProperties => ({
-  left: `${left}%`, bottom: `${bottom}%`, width: `${width}%`,
-  transform: `rotate(${rotate}deg)${flip ? ' scaleX(-1)' : ''}`,
-});
+const NAV = [
+  ['#scenarios', 'Наборы'],
+  ['#order', 'Как заказать'],
+  ['#price', 'Цена'],
+  ['#faq', 'Вопросы'],
+] as const;
+
+// Structured data for search engines: only facts from company.ts.
+const ORG_LD = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: COMPANY.name,
+  alternateName: COMPANY.brand,
+  telephone: COMPANY.phone,
+  taxID: COMPANY.unp,
+  address: { '@type': 'PostalAddress', streetAddress: COMPANY.address, addressCountry: 'BY' },
+  areaServed: 'BY',
+};
 
 export default function Home() {
   return (
     <>
-    <main>
-      <ArtDefs />
-      <header className="footer hero" aria-label="ДариСмысл">
-        <FooterBackground />
-        <div className="hero-dusk" aria-hidden="true" />
-        <Snow />
-        <Garland />
-        <Sparkles points={[[5, 34, 18], [15, 58, 12], [31, 30, 14], [45, 21, 11], [63, 27, 15], [71, 15, 10], [88, 48, 18], [94, 30, 12], [79, 63, 12], [24, 70, 16]]} />
-        <div className="art art-left" aria-hidden="true">
-          <Lollipop style={at(8, 40, 15, -14)} />
-          <Lollipop style={at(23, 46, 13, 9)} />
-          <GiftBox tone="green" style={at(2, 0, 33)} />
-          <GiftBox tone="red" style={at(29, 0, 44)} />
-          <GiftBox tone="cream" style={at(40, 40, 22, 7)} />
-          <WrappedCandy tone="red" style={at(72, 1, 16, 10)} />
-          <WrappedCandy tone="gold" style={at(78, 13, 14, -18)} />
-        </div>
-        <div className="art art-right" aria-hidden="true">
-          <FirBranch className="a" style={at(30, 30, 76, 8, true)} />
-          <CandyCane style={at(31, 0, 11, 6)} />
-          <CandyCane style={at(40, 0, 11, -8, true)} />
-          <GiftBox tone="cream" style={at(54, 0, 28)} />
-          <GiftBox tone="red" style={at(74, 0, 24)} />
-          <WrappedCandy tone="green" style={at(8, 3, 16, -8)} />
-        </div>
-        <div className="jobs">
-          <span className="tag">Новогодние подарки оптом</span>
-          <h1 className="headline job-title">Дарим смысл<br />Собираем праздник</h1>
-          <nav className="footer-nav" aria-label="Разделы">
-            <a href="#how">Как заказать</a>
-            <a href="#terms">Условия опта</a>
-            <a href="#about">О нас и FAQ</a>
-            <a href="#contact">Заявка</a>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG_LD) }} />
+      <header className="topbar">
+        <div className="wrap topbar-in">
+          <a href="#top" className="topbar-logo" aria-label={`${COMPANY.brand} — наверх`}><Wordmark tone="dark" /></a>
+          <nav className="topbar-nav" aria-label="Разделы">
+            {NAV.map(([href, label]) => <a key={href} href={href}>{label}</a>)}
           </nav>
-        </div>
-        <div className="logo" role="img" aria-label="ДариСмысл">
-          <Wordmark />
-        </div>
-        <div className="contact">
-          <span className="tag">Оставьте заявку</span>
-          <div className="headline contact-links">
-            <span>Расскажите задачу</span>
-            <span>Соберём под вас*</span>
-          </div>
-          <p className="note">*конфеты, упаковка и состав — под ваш заказ.</p>
-          <a className="cta" href="#contact">Оставить заявку</a>
+          <a className="topbar-phone" href={`tel:${COMPANY.phone}`}>{COMPANY.phoneView}</a>
+          <a className="btn btn-tape topbar-cta" href="#contact">Заявка</a>
         </div>
       </header>
 
-      <section className="section light" id="how">
-        <Drift fill="#fff8ee" />
-        <div className="section-bg" aria-hidden="true">
-          <Snowflake className="bg-flake" style={{ left: '-3%', top: '10%', width: 220, transform: 'rotate(12deg)' }} />
-          <Snowflake className="bg-flake" style={{ right: '4%', bottom: '8%', width: 150, transform: 'rotate(-8deg)' }} />
-          <FirBranch className="bg-fir" style={{ right: '-3%', top: '-1%', width: 'min(34vw,430px)', transform: 'rotate(172deg) scaleY(-1)' }} />
-          <GiftBox tone="green" className="bg-gift" style={{ left: '1%', bottom: '2%', width: 'clamp(70px,8vw,120px)' }} />
-          <GiftBox tone="red" className="bg-gift" style={{ left: '7%', bottom: '2%', width: 'clamp(54px,6vw,90px)' }} />
-          <WrappedCandy tone="red" className="bg-gift" style={{ right: '22%', bottom: '4%', width: 'clamp(50px,5vw,76px)', transform: 'rotate(-10deg)' }} />
-          <Star className="bg-star" style={{ left: '46%', top: '9%', width: 26 }} />
-          <Star className="bg-star" style={{ right: '14%', top: '46%', width: 18 }} />
-        </div>
-        <div className="wrap">
-          <h2 className="title">Как заказать</h2>
-          <p className="lead">Четыре шага от заявки до отгрузки.</p>
-          <ol className="steps">
-            {STEPS.map(({ title, text, Icon }, i) => (
-              <li key={title}>
-                <span className="ball" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
-                <Icon className="step-icon" />
-                <h3>{title}</h3>
-                <p>{text}</p>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
+      <main id="top">
+        <section className="hero" aria-labelledby="hero-title">
+          <div className="wrap hero-in">
+            <div className="hero-copy">
+              <h1 id="hero-title" className="hero-title">Дарим смысл. <span>Собираем праздник.</span></h1>
+              <p className="hero-lead">
+                Новогодние подарочные наборы оптом для компаний и профсоюзов: состав под задачу,
+                логотип на упаковке, доставка по Беларуси.
+              </p>
+              <div className="hero-actions">
+                <a className="btn btn-tape" href="?type=corporate#contact">Сотрудникам и клиентам</a>
+                <a className="btn btn-ink" href="?type=kids#contact">Детям сотрудников</a>
+              </div>
+              <p className="hero-deadline">К Новому 2027 году: чем раньше заявка, тем больше выбор состава и упаковки.</p>
+            </div>
 
-      <section className="section fir" id="terms">
-        <Drift fill="#0f3b2d" />
-        <div className="section-bg" aria-hidden="true">
-          <i className="bk" style={{ left: '8%', top: '30%', width: 320, height: 320 }} />
-          <i className="bk gold" style={{ right: '6%', top: '8%', width: 420, height: 420 }} />
-          <i className="bk red" style={{ right: '30%', bottom: '-12%', width: 380, height: 380 }} />
-          <Snow className="snow-sec" />
-          <Snowflake className="bg-flake gold" style={{ right: '3%', bottom: '5%', width: 190, transform: 'rotate(10deg)' }} />
-          <Snowflake className="bg-flake gold" style={{ left: '-2%', top: '36%', width: 140, transform: 'rotate(-14deg)' }} />
-          <FirBranch className="bg-fir" style={{ left: '-4%', bottom: '-2%', width: 'min(32vw,420px)', transform: 'rotate(-6deg)' }} />
-          <Sparkles points={[[12, 20, 14], [34, 10, 10], [58, 16, 12], [84, 34, 16], [92, 74, 12], [52, 90, 12], [20, 62, 10]]} />
-        </div>
-        <Garland className="garland-sec" />
-        <div className="wrap">
-          <h2 className="title">Условия опта</h2>
-          <ul className="terms">
-            {TERMS.map(({ title, text, Icon }) => (
-              <li key={title}>
-                <span className="icon-disc"><Icon className="term-icon" /></span>
-                <div>
-                  <h3>{title}</h3>
-                  <p>{text}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
-          <p className="terms-note"><Star className="note-star" />Цены и сроки зависят от состава и объёма. Рассчитаем их после заявки.<Star className="note-star" /></p>
-        </div>
-      </section>
+            <div className="parcel" aria-hidden="true">
+              <div className="parcel-box">
+                <div className="parcel-window"><FooterBackground /></div>
+                <span className="parcel-flap" />
+                <span className="parcel-ribbon parcel-ribbon-top" />
+                <span className="parcel-ribbon parcel-ribbon-v" />
+                <span className="parcel-ribbon parcel-ribbon-h" />
+                <svg className="parcel-bow" viewBox="0 0 120 70">
+                  <path d="M60 35C44 10 14 4 10 22s26 22 50 13zM60 35c16-25 46-31 50-13s-26 22-50 13z" fill="#d4152b" stroke="#a90f20" strokeWidth="3" />
+                  <path d="M56 38l-18 30h12l10-18 10 18h12L64 38z" fill="#a90f20" />
+                  <rect x="52" y="27" width="16" height="16" rx="4" fill="#a90f20" />
+                </svg>
+              </div>
+              <div className="parcel-tag">
+                <span>Получатель</span>
+                <strong>ваша команда</strong>
+                <span>Отправитель</span>
+                <strong>{COMPANY.brand}</strong>
+              </div>
+              <span className="stamp stamp-hero">Соберём<br />под вас</span>
+            </div>
+          </div>
+        </section>
 
-      <section className="section light" id="about">
-        <Drift fill="#fff8ee" />
-        <div className="section-bg" aria-hidden="true">
-          <Snowflake className="bg-flake" style={{ right: '-2%', top: '6%', width: 200, transform: 'rotate(20deg)' }} />
-          <Snowflake className="bg-flake" style={{ left: '38%', bottom: '4%', width: 120, transform: 'rotate(-6deg)' }} />
-          <CandyCane className="bg-gift" style={{ left: '1.5%', top: '8%', width: 'clamp(30px,3.4vw,52px)', transform: 'rotate(-12deg)' }} />
-          <CandyCane className="bg-gift" style={{ left: '4.5%', top: '12%', width: 'clamp(30px,3.4vw,52px)', transform: 'rotate(8deg) scaleX(-1)' }} />
-          <FirBranch className="bg-fir" style={{ right: '-4%', bottom: '-1%', width: 'min(30vw,400px)', transform: 'rotate(184deg)' }} />
-          <Star className="bg-star" style={{ left: '48%', top: '58%', width: 22 }} />
-        </div>
-        <div className="wrap about">
-          <div className="about-text">
-            <h2 className="title">О нас</h2>
-            <p>
-              ДариСмысл — белорусская компания, которая собирает подарочные наборы на заказ.
-              Мы сами закупаем конфеты, упаковку и наполнение, соединяем их в наборы и отгружаем оптом так, как нужно именно вам.
-            </p>
-            <p>Дарить подарки — это про внимание и смысл. Поэтому каждый набор мы собираем под повод, получателей и бюджет заказчика.</p>
-            <ul className="way">
-              {WAY.map(({ label, Icon }) => (
-                <li key={label}>
-                  <span className="icon-disc"><Icon className="way-icon" /></span>
-                  <span>{label}</span>
+        <section className="scenarios" id="scenarios" aria-labelledby="scenarios-title">
+          <div className="wrap">
+            <h2 id="scenarios-title" className="title">Два вида наборов — один подход</h2>
+            <div className="scenario-grid">
+              {SCENARIOS.map(s => (
+                <article key={s.id} className={`wrapper wrapper-${s.tone}`}>
+                  <div className="wrapper-print">
+                    <h3>{s.title}</h3>
+                    <p>{s.text}</p>
+                    <a className="btn btn-paper" href={`?type=${s.id}#contact`}>{s.cta}</a>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="order" id="order" aria-labelledby="order-title">
+          <div className="wrap">
+            <div className="sheet">
+              <div className="sheet-head">
+                <h2 id="order-title" className="title">Накладная на праздник</h2>
+                <span className="sheet-no" aria-hidden="true">№ НГ-2027 <i className="barcode" /></span>
+                <p>Пять шагов от заявки до отгрузки. Каждый — у нас в руках.</p>
+              </div>
+              <ol className="order-rows">
+                {ORDER.map(({ title, text, Icon, stamp, yours }, i) => (
+                  <li key={title}>
+                    <span className="order-n">{i + 1}</span>
+                    <Icon className="order-icon" />
+                    <div>
+                      <h3>{title}</h3>
+                      <p>{text}</p>
+                    </div>
+                    <span className={`stamp stamp-row${yours ? ' stamp-yours' : ''}`} aria-hidden="true">{stamp}</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </div>
+        </section>
+
+        <section className="price" id="price" aria-labelledby="price-title">
+          <div className="wrap price-in">
+            <div>
+              <h2 id="price-title" className="title">Из чего складывается цена</h2>
+              <p className="lead">
+                Не «цена от» без расшифровки. В расчёте — каждая позиция: понятно, за что вы платите и где можно сэкономить.
+              </p>
+              {(COMPANY.minOrder || COMPANY.priceFrom) && (
+                <p className="price-facts">
+                  {COMPANY.minOrder && <span>Минимальная партия: {COMPANY.minOrder}</span>}
+                  {COMPANY.priceFrom && <span>Цена набора: {COMPANY.priceFrom}</span>}
+                </p>
+              )}
+            </div>
+            <ul className="receipt">
+              {PRICE.map(p => (
+                <li key={p.item}><span>{p.item}</span><i aria-hidden="true" /><em>{p.note}</em></li>
+              ))}
+              <li className="receipt-total"><span>Итого</span><i aria-hidden="true" /><em>пришлём после заявки</em></li>
+            </ul>
+          </div>
+        </section>
+
+        <section className="papers" aria-labelledby="papers-title">
+          <div className="wrap">
+            <h2 id="papers-title" className="title">Для бухгалтерии и профкома</h2>
+            <ul className="paper-stack">
+              {PAPERS.map(p => (
+                <li key={p.title}>
+                  <span className="tick" aria-hidden="true" />
+                  <div>
+                    <h3>{p.title}</h3>
+                    <p>{p.text}</p>
+                  </div>
                 </li>
               ))}
             </ul>
           </div>
-          <div className="faq" id="faq">
-            <h2 className="title">Вопросы и ответы</h2>
-            {FAQ.map(item => (
-              <details key={item.q}>
-                <summary>{item.q}</summary>
-                <p>{item.a}</p>
-              </details>
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="section red" id="contact">
-        <Drift fill="#a3141c" />
-        <div className="section-bg" aria-hidden="true">
-          <i className="bk gold" style={{ left: '-6%', top: '10%', width: 440, height: 440 }} />
-          <i className="bk" style={{ right: '-4%', bottom: '4%', width: 400, height: 400 }} />
-          <Snow className="snow-sec" />
-          <Snowflake className="bg-flake white" style={{ right: '5%', top: '6%', width: 170, transform: 'rotate(8deg)' }} />
-          <Snowflake className="bg-flake white" style={{ left: '2%', bottom: '14%', width: 120, transform: 'rotate(-16deg)' }} />
-          <Sparkles points={[[6, 14, 14], [30, 8, 10], [46, 30, 12], [92, 18, 14], [64, 6, 10], [97, 60, 12], [38, 84, 12]]} />
-        </div>
-        <div className="wrap contact-wrap">
-          <div className="contact-intro">
-            <h2 className="title">Оставьте заявку</h2>
-            <p>Расскажите, какие подарки вам нужны. Мы вернёмся с предложением по составу, стоимости и срокам.</p>
-            <div className="contact-art" aria-hidden="true">
-              <FirBranch style={at(-6, 38, 78, -6)} />
-              <CandyCane style={at(6, 0, 11, -8)} />
-              <CandyCane style={at(14, 0, 11, 8, true)} />
-              <GiftBox tone="cream" style={at(24, 0, 34)} />
-              <GiftBox tone="green" style={at(54, 0, 28)} />
-              <GiftBox tone="cream" style={at(60, 36, 18, -8)} />
-              <WrappedCandy tone="gold" style={at(83, 2, 16, 12)} />
+        <section className="faq-sec" id="faq" aria-labelledby="faq-title">
+          <div className="wrap faq-in">
+            <div>
+              <h2 id="faq-title" className="title">Вопросы и ответы</h2>
+              <p className="lead">
+                {COMPANY.brand} — белорусская компания. Мы сами закупаем конфеты, упаковку и наполнение, собираем наборы и отгружаем их оптом.
+              </p>
+            </div>
+            <div className="faq">
+              {FAQ.map(item => (
+                <details key={item.q}>
+                  <summary>{item.q}</summary>
+                  <p>{item.a}</p>
+                </details>
+              ))}
             </div>
           </div>
-          <LeadForm />
-        </div>
-      </section>
-    </main>
-    <SiteFooter home />
+        </section>
+
+        <section className="contact" id="contact" aria-labelledby="contact-title">
+          <div className="wrap contact-in">
+            <div className="contact-intro">
+              <h2 id="contact-title" className="title">Бланк заявки</h2>
+              <p>Заполните за минуту — вернёмся с составом, стоимостью и сроками.</p>
+              <p>Удобнее голосом? <a href={`tel:${COMPANY.phone}`}>{COMPANY.phoneView}</a></p>
+            </div>
+            <LeadForm />
+          </div>
+        </section>
+      </main>
+      <SiteFooter home />
     </>
   );
 }

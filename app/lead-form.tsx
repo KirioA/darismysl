@@ -1,45 +1,92 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
-import { COMPANY } from './company';
+import { useEffect, useState } from 'react';
+import { COMPANY, PROCESSOR } from './company';
+import { GIFT_TYPES } from './lead-types';
+
+type Status = 'idle' | 'sending' | 'sent' | 'error';
 
 export default function LeadForm() {
-  const [sent, setSent] = useState(false);
+  const [status, setStatus] = useState<Status>('idle');
+  const [type, setType] = useState<string>('corporate');
 
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  // Scenario buttons link here with ?type=…, so the request starts pre-filled.
+  useEffect(() => {
+    const preset = new URLSearchParams(window.location.search).get('type');
+    if (GIFT_TYPES.some(([id]) => id === preset)) setType(preset!);
+  }, []);
+
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // Proof of consent: the operator must be able to prove it (Law No. 99-Z, art. 5),
-    // so the version and time of the accepted text travel with every request.
-    const consent = {
-      version: COMPANY.consentVersion,
-      acceptedAt: new Date().toISOString(),
-      processing: true,
-      crossBorderTransfer: true,
-    };
-    void consent;
-    // TODO: отправка заявки пока не подключена (настроим позже: почта / Telegram / CRM).
-    setSent(true);
+    const form = event.currentTarget;
+    const data = Object.fromEntries(new FormData(form));
+    setStatus('sending');
+    try {
+      const res = await fetch('/api/lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        // Proof of consent: the operator must be able to prove it (Law No. 99-Z, art. 5),
+        // so the version and time of the accepted text travel with every request.
+        body: JSON.stringify({ ...data, consentVersion: COMPANY.consentVersion, acceptedAt: new Date().toISOString() }),
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      form.reset();
+      setStatus('sent');
+    } catch {
+      setStatus('error');
+    }
   };
 
   return (
-    <form className="lead-form" onSubmit={onSubmit}>
+    <form className={`lead-form${status === 'sent' ? ' is-sent' : ''}`} onSubmit={onSubmit}>
+      <fieldset className="wide gift-type">
+        <legend><b>1</b>Кому подарки</legend>
+        <div className="chips">
+          {GIFT_TYPES.map(([id, label]) => (
+            <label key={id} className="chip">
+              <input type="radio" name="type" value={id} checked={type === id} onChange={() => setType(id)} />
+              <span>{label}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+
       <label>
-        <span>Ваше имя</span>
-        <input name="name" type="text" autoComplete="name" required />
+        <span><b>2</b>Сколько наборов</span>
+        <input name="quantity" type="number" inputMode="numeric" min={1} required placeholder="например, 50" />
       </label>
       <label>
-        <span>Телефон или e-mail</span>
-        <input name="contact" type="text" autoComplete="tel" required />
+        <span><b>3</b>Бюджет на 1 набор, BYN <em>необязательно</em></span>
+        <input name="budget" type="text" inputMode="decimal" placeholder="например, 40" />
       </label>
       <label>
-        <span>Компания</span>
-        <input name="company" type="text" autoComplete="organization" />
+        <span><b>4</b>К какой дате</span>
+        <input name="date" type="date" />
+      </label>
+      <label className="check logo-check">
+        <input type="checkbox" name="logo" value="да" />
+        <span>Нужен логотип на упаковке</span>
+      </label>
+
+      <label>
+        <span><b>5</b>Ваше имя</span>
+        <input name="name" type="text" autoComplete="name" required maxLength={100} />
+      </label>
+      <label>
+        <span><b>6</b>Телефон или e-mail</span>
+        <input name="contact" type="text" autoComplete="tel" required maxLength={100} placeholder="+375 __ ___-__-__" />
       </label>
       <label className="wide">
-        <span>Что нужно: количество наборов, бюджет, срок</span>
-        <textarea name="message" rows={4} />
+        <span><b>7</b>Компания <em>необязательно</em></span>
+        <input name="company" type="text" autoComplete="organization" maxLength={150} />
       </label>
+      <label className="wide">
+        <span><b>8</b>Комментарий <em>необязательно</em></span>
+        <textarea name="message" rows={3} maxLength={2000} placeholder="Пожелания к составу, упаковке, возрасту детей" />
+      </label>
+      {/* Honeypot: hidden from people, bots fill it and get dropped server-side. */}
+      <input className="hp" type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" />
 
       <div className="wide operator-note">
         <strong>Кому и зачем вы передаёте данные.</strong> Оператор: {COMPANY.name}, УНП {COMPANY.unp}, {COMPANY.address}.
@@ -48,27 +95,31 @@ export default function LeadForm() {
       </div>
 
       <label className="wide check">
-        <input type="checkbox" name="consent_processing" required />
+        <input type="checkbox" name="consent_processing" value="да" required />
         <span>
           Даю <Link href="/consent" target="_blank">согласие на обработку моих персональных данных</Link> для рассмотрения заявки и связи со мной.
           С <Link href="/privacy" target="_blank">Политикой в отношении обработки персональных данных</Link> ознакомлен(а).
         </span>
       </label>
       <label className="wide check">
-        <input type="checkbox" name="consent_transfer" required />
+        <input type="checkbox" name="consent_transfer" value="да" required />
         <span>
-          Даю согласие на <Link href="/consent#transfer" target="_blank">трансграничную передачу</Link> моих данных в США (почтовый сервис Gmail, Google LLC)
+          Даю согласие на <Link href="/consent#transfer" target="_blank">трансграничную передачу</Link> моих данных ({PROCESSOR.country}, {PROCESSOR.service}, {PROCESSOR.name})
           и ознакомлен(а) с рисками такой передачи.
         </span>
       </label>
-      <p className="wide check-hint">Без обеих отметок заявка не принимается. Вы всегда можете позвонить: {COMPANY.phoneView}.</p>
 
       <div className="wide form-actions">
-        <button type="submit">Отправить заявку</button>
+        <button type="submit" className="btn btn-tape" disabled={status === 'sending'}>
+          {status === 'sending' ? 'Отправляем…' : 'Отправить заявку'}
+        </button>
+        <p className="check-hint">Без обеих отметок заявка не принимается.</p>
       </div>
       <p className="wide form-status" role="status" aria-live="polite">
-        {sent ? 'Спасибо! Мы получили вашу заявку и скоро свяжемся с вами.' : ''}
+        {status === 'sent' && 'Заявка принята. Свяжемся с вами в рабочее время.'}
+        {status === 'error' && <>Заявка не отправилась. Позвоните нам: <a href={`tel:${COMPANY.phone}`}>{COMPANY.phoneView}</a> — или попробуйте ещё раз.</>}
       </p>
+      <span className="stamp stamp-sent" aria-hidden="true">Принято</span>
     </form>
   );
 }
