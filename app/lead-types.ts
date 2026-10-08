@@ -3,5 +3,4 @@ export const GIFT_TYPES = [
   ['corporate', 'Сотрудникам'],
   ['partners', 'Клиентам и партнёрам'],
   ['kids', 'Детям сотрудников'],
-  ['other', 'Другое'],
 ] as const;
