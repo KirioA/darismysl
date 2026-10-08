@@ -62,6 +62,26 @@ export default function Motion() {
         .from('.stamp-hero', { scale: 2.6, rotate: -180, opacity: 0, duration: 0.8, ease: 'back.out(1.8)' }, 2.2)
         .from('.hero-deadline', { opacity: 0, y: 16, duration: 0.6 }, 2.2);
 
+      // Hero decor drifts against the cursor, each piece at its own depth.
+      const floaters = gsap.utils.toArray<HTMLElement>('.floater').map(el => ({
+        depth: Number(el.dataset.depth),
+        x: gsap.quickTo(el, 'x', { duration: 1, ease: 'power3.out' }),
+        y: gsap.quickTo(el, 'y', { duration: 1, ease: 'power3.out' }),
+      }));
+      const onMove = (e: PointerEvent) => {
+        const dx = e.clientX / window.innerWidth - 0.5;
+        const dy = e.clientY / window.innerHeight - 0.5;
+        floaters.forEach(f => { f.x(dx * -60 * f.depth); f.y(dy * -40 * f.depth); });
+      };
+      window.addEventListener('pointermove', onMove, { passive: true });
+      intro.from('.floater', { scale: 0, opacity: 0, rotate: -90, duration: 0.8, stagger: 0.08, ease: 'back.out(2)' }, 1.2);
+
+      // Giant outlined words slide sideways with the scroll.
+      gsap.utils.toArray<HTMLElement>('.marquee').forEach(m => {
+        const dir = Number(m.dataset.dir);
+        gsap.fromTo(m.querySelector('span'), { xPercent: dir > 0 ? 0 : -33 }, { xPercent: dir > 0 ? -33 : 0, ease: 'none', scrollTrigger: { trigger: m, start: 'top bottom', end: 'bottom top', scrub: true } });
+      });
+
       // Parallax: the parcel floats slower than the copy.
       gsap.to('.parcel', { yPercent: -10, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
 
@@ -90,7 +110,7 @@ export default function Motion() {
         const travel = gsap.to(track, {
           x: () => -distance(),
           ease: 'none',
-          scrollTrigger: { trigger: '.reel', start: 'top top', end: () => '+=' + distance(), pin: '.reel-pin', scrub: 1, invalidateOnRefresh: true },
+          scrollTrigger: { trigger: '.reel', start: 'top top', end: () => '+=' + distance(), pin: '.reel-pin', scrub: 1, invalidateOnRefresh: true, refreshPriority: 1 },
         });
         gsap.to('.reel-bar i', { scaleX: 1, ease: 'none', scrollTrigger: { trigger: '.reel', start: 'top top', end: () => '+=' + distance(), scrub: true } });
         gsap.utils.toArray<HTMLElement>('.reel-card').forEach(card => {
@@ -126,6 +146,7 @@ export default function Motion() {
       gsap.from('.tick', { scale: 0, rotate: -90, stagger: 0.15, duration: 0.6, delay: 0.3, ease: 'back.out(2.5)', scrollTrigger: { trigger: '.paper-stack', start: 'top 85%' } });
 
       return () => {
+        window.removeEventListener('pointermove', onMove);
         reel.revert();
         gsap.ticker.remove(raf);
         lenis?.destroy();

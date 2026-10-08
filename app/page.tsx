@@ -88,6 +88,40 @@ function Tape({ tone = 'berry' }: { tone?: 'berry' | 'honey' }) {
   );
 }
 
+// Floating decor around the hero: candies and stars that drift with the cursor.
+const FLOATERS = [
+  { kind: 'candy', tone: '#c8423a', x: 40, y: 88, s: 64, r: -18, d: 0.6 },
+  { kind: 'star', tone: '#e8b654', x: 46, y: 12, s: 34, r: 0, d: 1.2 },
+  { kind: 'candy', tone: '#22453c', x: 55, y: 8, s: 54, r: 24, d: 0.9 },
+  { kind: 'star', tone: '#c8423a', x: 92, y: 10, s: 26, r: 0, d: 1.5 },
+  { kind: 'candy', tone: '#e8b654', x: 94, y: 70, s: 58, r: -30, d: 0.7 },
+  { kind: 'star', tone: '#22453c', x: 3, y: 74, s: 30, r: 0, d: 1.3 },
+] as const;
+
+function Floater({ kind, tone, x, y, s, r, d }: (typeof FLOATERS)[number]) {
+  const style = { left: `${x}%`, top: `${y}%`, width: s, '--r': `${r}deg` } as React.CSSProperties;
+  return kind === 'candy' ? (
+    <svg className="floater" data-depth={d} style={style} viewBox="0 0 120 60" aria-hidden="true">
+      <path d="M30 30L4 8v44zM90 30l26-22v44z" fill={tone} opacity=".75" />
+      <rect x="26" y="12" width="68" height="36" rx="18" fill={tone} />
+      <path d="M44 14v32M60 13v34M76 14v32" stroke="#fff" strokeOpacity=".35" strokeWidth="5" />
+    </svg>
+  ) : (
+    <svg className="floater" data-depth={d} style={style} viewBox="0 0 40 40" aria-hidden="true">
+      <path d="M20 0l5 15 15 5-15 5-5 15-5-15L0 20l15-5z" fill={tone} />
+    </svg>
+  );
+}
+
+// Giant outlined words that slide sideways as the page scrolls.
+function Marquee({ words, dir = 1 }: { words: string; dir?: 1 | -1 }) {
+  return (
+    <div className="marquee" data-dir={dir} aria-hidden="true">
+      <span>{words} · {words} · {words} · </span>
+    </div>
+  );
+}
+
 // Structured data for search engines: only facts from company.ts.
 const ORG_LD = {
   '@context': 'https://schema.org',
@@ -119,6 +153,7 @@ export default function Home() {
 
       <main id="top">
         <section className="hero" aria-labelledby="hero-title">
+          <div className="floaters">{FLOATERS.map((f, i) => <Floater key={i} {...f} />)}</div>
           <div className="wrap hero-in">
             <div className="hero-copy">
               <h1 id="hero-title" className="hero-title">
@@ -173,7 +208,7 @@ export default function Home() {
             <h2 id="scenarios-title" className="title split">Два вида наборов — один подход</h2>
             <div className="scenario-grid">
               {SCENARIOS.map(s => (
-                <article key={s.id} className={`wrapper wrapper-${s.tone}`} data-rise>
+                <article key={s.id} className={`wrapper wrapper-${s.tone}`}>
                   <div className="wrapper-print">
                     <h3>{s.title}</h3>
                     <p>{s.text}</p>
@@ -184,6 +219,8 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        <Marquee words="Подарки с логотипом" />
 
         <section className="reel" id="order" aria-labelledby="order-title">
           <div className="reel-pin">
@@ -228,6 +265,8 @@ export default function Home() {
             </ul>
           </div>
         </section>
+
+        <Marquee words="Собираем праздник" dir={-1} />
 
         <section className="papers" aria-labelledby="papers-title">
           <div className="wrap">
