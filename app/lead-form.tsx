@@ -39,7 +39,7 @@ export default function LeadForm() {
   };
 
   return (
-    <form className={`lead-form${status === 'sent' ? ' is-sent' : ''}`} onSubmit={onSubmit}>
+    <form className={`lead-form${status === 'sent' ? ' is-sent' : ''}`} onSubmit={onSubmit} data-reveal>
       <fieldset className="wide gift-type">
         <legend><b>1</b>Кому подарки</legend>
         <div className="chips">

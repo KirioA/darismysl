@@ -4,6 +4,7 @@ import { Wordmark } from './decor';
 import SiteFooter from './site-footer';
 import { IconBox, IconCandy, IconCheck, IconForm, IconTruck } from './art';
 import { COMPANY } from './company';
+import Motion from './motion';
 
 const SCENARIOS = [
   {
@@ -56,6 +57,20 @@ const FAQ = [
   { q: 'Как рассчитывается стоимость?', a: 'Цена складывается из состава, упаковки, нанесения логотипа, сборки и доставки. Расчёт пришлём после заявки.' },
 ];
 
+const TAPE = ['Подарочные наборы оптом', 'Логотип на упаковке', 'Детские сладкие подарки', 'Доставка по Беларуси', 'Договор и безнал'];
+
+// Endless tape strip; the text is doubled so the loop is seamless.
+function Tape({ tone = 'red' }: { tone?: 'red' | 'gold' }) {
+  const items = [...TAPE, ...TAPE];
+  return (
+    <div className={`tape tape-${tone}`} aria-hidden="true">
+      <div className="tape-track">
+        {items.map((t, i) => <span key={i}>{t}</span>)}
+      </div>
+    </div>
+  );
+}
+
 const NAV = [
   ['#scenarios', 'Наборы'],
   ['#order', 'Как заказать'],
@@ -78,6 +93,7 @@ const ORG_LD = {
 export default function Home() {
   return (
     <>
+      <Motion />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG_LD) }} />
       <header className="topbar">
         <div className="wrap topbar-in">
@@ -94,7 +110,7 @@ export default function Home() {
         <section className="hero" aria-labelledby="hero-title">
           <div className="wrap hero-in">
             <div className="hero-copy">
-              <h1 id="hero-title" className="hero-title">Дарим смысл. <span>Собираем праздник.</span></h1>
+              <h1 id="hero-title" className="hero-title"><span className="l1">Дарим смысл.</span> <span className="l2">Собираем праздник.</span></h1>
               <p className="hero-lead">
                 Новогодние подарочные наборы оптом для компаний и профсоюзов: состав под задачу,
                 логотип на упаковке, доставка по Беларуси.
@@ -130,12 +146,14 @@ export default function Home() {
           </div>
         </section>
 
+        <Tape />
+
         <section className="scenarios" id="scenarios" aria-labelledby="scenarios-title">
           <div className="wrap">
-            <h2 id="scenarios-title" className="title">Два вида наборов — один подход</h2>
+            <h2 id="scenarios-title" className="title" data-reveal>Два вида наборов — один подход</h2>
             <div className="scenario-grid">
-              {SCENARIOS.map(s => (
-                <article key={s.id} className={`wrapper wrapper-${s.tone}`}>
+              {SCENARIOS.map((s, i) => (
+                <article key={s.id} className={`wrapper wrapper-${s.tone}`} data-reveal style={{ '--i': i } as React.CSSProperties}>
                   <div className="wrapper-print">
                     <h3>{s.title}</h3>
                     <p>{s.text}</p>
@@ -149,7 +167,7 @@ export default function Home() {
 
         <section className="order" id="order" aria-labelledby="order-title">
           <div className="wrap">
-            <div className="sheet">
+            <div className="sheet" data-reveal>
               <div className="sheet-head">
                 <h2 id="order-title" className="title">Накладная на праздник</h2>
                 <span className="sheet-no" aria-hidden="true">№ НГ-2027 <i className="barcode" /></span>
@@ -157,7 +175,7 @@ export default function Home() {
               </div>
               <ol className="order-rows">
                 {ORDER.map(({ title, text, Icon, stamp, yours }, i) => (
-                  <li key={title}>
+                  <li key={title} data-reveal style={{ '--i': i } as React.CSSProperties}>
                     <span className="order-n">{i + 1}</span>
                     <Icon className="order-icon" />
                     <div>
@@ -175,7 +193,7 @@ export default function Home() {
         <section className="price" id="price" aria-labelledby="price-title">
           <div className="wrap price-in">
             <div>
-              <h2 id="price-title" className="title">Из чего складывается цена</h2>
+              <h2 id="price-title" className="title" data-reveal>Из чего складывается цена</h2>
               <p className="lead">
                 Не «цена от» без расшифровки. В расчёте — каждая позиция: понятно, за что вы платите и где можно сэкономить.
               </p>
@@ -186,9 +204,9 @@ export default function Home() {
                 </p>
               )}
             </div>
-            <ul className="receipt">
-              {PRICE.map(p => (
-                <li key={p.item}><span>{p.item}</span><i aria-hidden="true" /><em>{p.note}</em></li>
+            <ul className="receipt" data-reveal>
+              {PRICE.map((p, i) => (
+                <li key={p.item} style={{ '--i': i } as React.CSSProperties}><span>{p.item}</span><i aria-hidden="true" /><em>{p.note}</em></li>
               ))}
               <li className="receipt-total"><span>Итого</span><i aria-hidden="true" /><em>пришлём после заявки</em></li>
             </ul>
@@ -197,10 +215,10 @@ export default function Home() {
 
         <section className="papers" aria-labelledby="papers-title">
           <div className="wrap">
-            <h2 id="papers-title" className="title">Для бухгалтерии и профкома</h2>
-            <ul className="paper-stack">
-              {PAPERS.map(p => (
-                <li key={p.title}>
+            <h2 id="papers-title" className="title" data-reveal>Для бухгалтерии и профкома</h2>
+            <ul className="paper-stack" data-reveal>
+              {PAPERS.map((p, i) => (
+                <li key={p.title} style={{ '--i': i } as React.CSSProperties}>
                   <span className="tick" aria-hidden="true" />
                   <div>
                     <h3>{p.title}</h3>
@@ -212,17 +230,19 @@ export default function Home() {
           </div>
         </section>
 
+        <Tape tone="gold" />
+
         <section className="faq-sec" id="faq" aria-labelledby="faq-title">
           <div className="wrap faq-in">
             <div>
-              <h2 id="faq-title" className="title">Вопросы и ответы</h2>
+              <h2 id="faq-title" className="title" data-reveal>Вопросы и ответы</h2>
               <p className="lead">
                 {COMPANY.brand} — белорусская компания. Мы сами закупаем конфеты, упаковку и наполнение, собираем наборы и отгружаем их оптом.
               </p>
             </div>
-            <div className="faq">
-              {FAQ.map(item => (
-                <details key={item.q}>
+            <div className="faq" data-reveal>
+              {FAQ.map((item, i) => (
+                <details key={item.q} style={{ '--i': i } as React.CSSProperties}>
                   <summary>{item.q}</summary>
                   <p>{item.a}</p>
                 </details>
@@ -233,7 +253,7 @@ export default function Home() {
 
         <section className="contact" id="contact" aria-labelledby="contact-title">
           <div className="wrap contact-in">
-            <div className="contact-intro">
+            <div className="contact-intro" data-reveal>
               <h2 id="contact-title" className="title">Бланк заявки</h2>
               <p>Заполните за минуту — вернёмся с составом, стоимостью и сроками.</p>
               <p>Удобнее голосом? <a href={`tel:${COMPANY.phone}`}>{COMPANY.phoneView}</a></p>

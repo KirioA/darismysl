@@ -16,6 +16,7 @@
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:84px}
+html,body{overflow-x:clip}
 body{margin:0;min-height:100vh;background:var(--kraft) var(--fibers);font-size:17px;line-height:1.55}
 a{color:inherit}
 h1,h2,h3,p{margin:0}
@@ -63,7 +64,8 @@ ul,ol{margin:0;padding:0;list-style:none}
 .hero{padding:clamp(40px,6vw,96px) 0 clamp(64px,7vw,120px)}
 .hero-in{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(32px,5vw,80px);align-items:center}
 .hero-title{font-family:var(--display);font-weight:800;font-size:clamp(40px,5.6vw,88px);line-height:1.02;letter-spacing:-.03em;text-wrap:balance}
-.hero-title span{display:block;color:var(--ribbon)}
+.hero-title span{display:block}
+.hero-title .l2{color:var(--ribbon)}
 .hero-lead{margin-top:clamp(20px,2vw,30px);max-width:40ch;font-size:clamp(18px,1.45vw,21px);line-height:1.5}
 .hero-actions{display:flex;flex-wrap:wrap;gap:14px;margin-top:clamp(26px,2.6vw,38px)}
 .hero-deadline{margin-top:22px;max-width:46ch;padding-top:14px;border-top:2px dashed rgba(22,32,107,.45);font-size:15px;color:var(--ink)}
@@ -120,9 +122,6 @@ ul,ol{margin:0;padding:0;list-style:none}
 .stamp-row{min-width:138px}
 .order-rows li:last-child{border-bottom:0}
 @keyframes press{from{opacity:0;transform:rotate(-8deg) scale(1.7)}to{opacity:.9;transform:rotate(-8deg) scale(1)}}
-@supports (animation-timeline:view()){
-  .stamp-row{animation:press linear both;animation-timeline:view();animation-range:entry 70% cover 35%}
-}
 
 /* ---------- Price: receipt ---------- */
 .price{padding:clamp(64px,7vw,120px) 0;background:var(--ink);color:var(--paper)}
@@ -239,11 +238,94 @@ ul,ol{margin:0;padding:0;list-style:none}
 .purpose dt{font-weight:600}
 .purpose dd{margin:0}
 
+
+/* ---------- Motion: one grammar — the parcel gets packed, stamped and shipped ---------- */
+@keyframes rise{from{opacity:0;transform:translateY(.45em)}to{opacity:1;transform:none}}
+@keyframes fade-up{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes drop{0%{opacity:0;transform:translateY(-70px) rotate(-6deg)}60%{opacity:1;transform:translateY(8px) rotate(1deg)}100%{transform:none}}
+@keyframes tie-x{from{transform:scaleX(0)}to{transform:none}}
+@keyframes tie-y{from{transform:scaleY(0)}to{transform:none}}
+@keyframes pop{0%{transform:translate(-50%,-50%) scale(0) rotate(-30deg)}70%{transform:translate(-50%,-50%) scale(1.15) rotate(4deg)}100%{transform:translate(-50%,-50%) scale(1)}}
+@keyframes swing{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(-2deg)}}
+@keyframes tag-in{from{opacity:0;transform:translateY(30px) rotate(12deg)}to{opacity:1;transform:rotate(-5deg)}}
+@keyframes hero-stamp{0%{opacity:0;transform:rotate(-14deg) scale(2.2)}60%{opacity:.95;transform:rotate(-14deg) scale(.94)}100%{opacity:.92;transform:rotate(-14deg) scale(1)}}
+@keyframes tape{to{transform:translateX(-50%)}}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-.6deg)}50%{transform:translateY(-7px) rotate(.6deg)}}
+@keyframes snow{to{background-position:0 600px,40px 900px,-30px 1200px}}
+@keyframes print{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0)}}
+@keyframes shine{from{transform:translateX(-120%) skewX(-20deg)}to{transform:translateX(220%) skewX(-20deg)}}
+
+/* hero: assembled on load */
+.hero{position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.75;
+  background:radial-gradient(circle,#fff 1.2px,transparent 2px) 0 0/90px 120px,radial-gradient(circle,#fff 1.6px,transparent 2.4px) 30px 50px/140px 180px,radial-gradient(circle,rgba(255,255,255,.8) 2.4px,transparent 3.2px) 60px 10px/210px 260px;
+  animation:snow 30s linear infinite}
+.hero-in{position:relative}
+.hero-title .l1,.hero-title .l2{animation:rise .9s var(--ease) both}
+.hero-title .l2{animation-delay:.12s}
+.hero-lead{animation:fade-up .8s var(--ease) .3s both}
+.hero-actions{animation:fade-up .8s var(--ease) .42s both}
+.hero-deadline{animation:fade-up .8s var(--ease) .54s both}
+.parcel-box{animation:drop 1s var(--ease) .2s both}
+.parcel-ribbon-h{transform-origin:left;animation:tie-x .6s var(--ease) 1s both}
+.parcel-ribbon-v,.parcel-ribbon-top{transform-origin:top;animation:tie-y .5s var(--ease) 1.1s both}
+.parcel-bow{animation:pop .6s var(--ease) 1.45s both}
+.parcel-tag{transform-origin:20% 0;animation:tag-in .7s var(--ease) 1.3s both,swing 4.5s ease-in-out 2s infinite}
+.stamp-hero{animation:hero-stamp .55s cubic-bezier(.3,1.4,.5,1) 1.8s both}
+
+/* tape strips crossing section seams */
+.tape{position:relative;z-index:3;margin:-22px -2% -22px;padding:13px 0;overflow:hidden;transform:rotate(-1.2deg);box-shadow:0 10px 18px -10px rgba(40,15,5,.55)}
+.tape-red{background:var(--ribbon);color:#fff}
+.tape-gold{background:var(--foil);color:var(--ink);transform:rotate(1deg)}
+.tape-track{display:flex;width:max-content;animation:tape 40s linear infinite}
+.tape-gold .tape-track{animation-direction:reverse}
+.tape span{display:inline-flex;align-items:center;gap:28px;padding-right:28px;font:800 15px/1 var(--display);letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+.tape span::after{content:"";width:9px;height:9px;border-radius:50%;background:currentColor;opacity:.7}
+
+/* buttons: a light sweep across the tape */
+.btn-tape,.btn-ink{position:relative;overflow:hidden}
+.btn-tape::after,.btn-ink::after{content:"";position:absolute;top:0;bottom:0;left:0;width:40%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);transform:translateX(-120%) skewX(-20deg)}
+.btn-tape:hover::after,.btn-ink:hover::after{animation:shine .7s var(--ease)}
+
+/* top bar: shadow once scrolled, ribbon progress line */
+.topbar{transition:box-shadow .3s}
+.scrolled .topbar{box-shadow:0 10px 24px -14px rgba(40,15,5,.7)}
+.topbar::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:4px;background:var(--ribbon);transform-origin:left;transform:scaleX(var(--p,0))}
+
+/* candies: idle bob, twist on hover */
+.wrapper{animation:bob 5s ease-in-out infinite}
+.wrapper:nth-child(2){animation-delay:-2.5s}
+.wrapper::before,.wrapper::after{transition:transform .5s var(--ease)}
+.wrapper::before{transform-origin:right center}
+.wrapper::after{transform-origin:left center}
+.wrapper:hover::before{transform:scaleX(.82) scaleY(1.08) rotate(-4deg)}
+.wrapper:hover::after{transform:scaleX(.82) scaleY(1.08) rotate(4deg)}
+
+/* scroll reveals (only when JS runs, so content is never stuck hidden) */
+.js [data-reveal]{opacity:0;transform:translateY(28px)}
+.js [data-reveal].in{opacity:1;transform:none;transition:opacity .8s var(--ease),transform .8s var(--ease);transition-delay:calc(var(--i,0)*110ms)}
+.js .wrapper[data-reveal].in{animation:bob 5s ease-in-out .9s infinite}
+.js .stamp-row{opacity:0}
+.js .order-rows li.in .stamp-row{animation:press .5s cubic-bezier(.3,1.4,.5,1) calc(.35s + var(--i,0)*110ms) both}
+.js .receipt.in{transform:rotate(1.2deg);animation:print 1.1s var(--ease) both}
+.js .receipt li{opacity:0}
+.js .receipt.in li{animation:fade-up .5s var(--ease) calc(.4s + var(--i,0)*120ms) both}
+.js .tick::after{transform:rotate(40deg) scale(0);transition:transform .45s cubic-bezier(.3,1.4,.5,1)}
+.js .paper-stack.in .tick::after{transform:rotate(40deg) scale(1);transition-delay:calc(.3s + var(--i,0)*150ms)}
+
+/* FAQ: smooth open where supported */
+@supports (interpolate-size:allow-keywords){
+  .faq{interpolate-size:allow-keywords}
+  .faq details::details-content{height:0;overflow:hidden;transition:height .4s var(--ease),content-visibility .4s allow-discrete}
+  .faq details[open]::details-content{height:auto}
+}
+
 /* ---------- Responsive ---------- */
 @media(max-width:1000px){
   .hero-in,.price-in,.faq-in,.contact-in{grid-template-columns:1fr}
   .parcel{width:min(100%,420px);margin-top:24px}
     .footer-grid{grid-template-columns:1fr 1fr}
+  .scenario-grid{grid-template-columns:1fr;max-width:640px;margin-inline:auto}
   .topbar-nav{display:none}
   .topbar-phone{margin-left:auto}
 }
@@ -254,13 +336,13 @@ ul,ol{margin:0;padding:0;list-style:none}
   .topbar-phone{display:none}
   .topbar-cta{margin-left:auto}
   .hero-actions .btn{flex:1 1 100%}
-  .scenario-grid,.lead-form,.footer-grid{grid-template-columns:1fr}
+  .lead-form,.footer-grid{grid-template-columns:1fr}
     .order-rows li{grid-template-columns:44px 1fr;row-gap:10px}
   .order-icon{display:none}
   .stamp-row{grid-column:2;justify-self:start;min-width:0;font-size:13px}
     .parcel-tag{right:-2%}
   .stamp-hero{left:-2%}
-  .receipt{transform:none}
+  .receipt,.js .receipt.in{transform:none}
   .paper-stack{grid-template-columns:1fr}
   .wrapper{margin:0 22px;padding:14px}
   .wrapper::before,.wrapper::after{width:22px}
@@ -274,5 +356,7 @@ ul,ol{margin:0;padding:0;list-style:none}
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   *,*::before,*::after{animation:none!important;transition:none!important}
+  .js [data-reveal],.js .stamp-row,.js .receipt li{opacity:1;transform:none}
+  .js .tick::after{transform:rotate(40deg) scale(1)}
   .is-sent .stamp-sent{opacity:.9}
 }
