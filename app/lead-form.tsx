@@ -10,11 +10,14 @@ type Status = 'idle' | 'sending' | 'sent' | 'error';
 export default function LeadForm() {
   const [status, setStatus] = useState<Status>('idle');
   const [type, setType] = useState<string>('corporate');
+  const [logo, setLogo] = useState(false);
 
   // Scenario buttons link here with ?type=…, so the request starts pre-filled.
   useEffect(() => {
-    const preset = new URLSearchParams(window.location.search).get('type');
+    const params = new URLSearchParams(window.location.search);
+    const preset = params.get('type');
     if (GIFT_TYPES.some(([id]) => id === preset)) setType(preset!);
+    if (params.get('logo') === '1') setLogo(true);
   }, []);
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -32,6 +35,7 @@ export default function LeadForm() {
       });
       if (!res.ok) throw new Error(String(res.status));
       form.reset();
+      setLogo(false);
       setStatus('sent');
     } catch {
       setStatus('error');
@@ -39,7 +43,7 @@ export default function LeadForm() {
   };
 
   return (
-    <form className={`lead-form${status === 'sent' ? ' is-sent' : ''}`} onSubmit={onSubmit} data-reveal>
+    <form className={`lead-form${status === 'sent' ? ' is-sent' : ''}`} onSubmit={onSubmit} data-rise>
       <fieldset className="wide gift-type">
         <legend><b>1</b>Кому подарки</legend>
         <div className="chips">
@@ -65,7 +69,7 @@ export default function LeadForm() {
         <input name="date" type="date" />
       </label>
       <label className="check logo-check">
-        <input type="checkbox" name="logo" value="да" />
+        <input type="checkbox" name="logo" value="да" checked={logo} onChange={e => setLogo(e.target.checked)} />
         <span>Нужен логотип на упаковке</span>
       </label>
 

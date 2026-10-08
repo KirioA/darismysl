@@ -1,29 +1,27 @@
 # DESIGN — ДариСмысл
 
-World: the parcel and its waybill. The ground is kraft carton, text is carbon-blue ink, states are rubber stamps, actions are red ribbon tape. Candy-wrapper prints appear only as the goods (the scenario panels). The direction contract is in `.impeccable/surfaces/app-page-tsx.md`.
+World: the parcel and its waybill. The ground is kraft carton, text is carbon-blue ink, states are rubber stamps, actions are berry ribbon. Candy-wrapper prints appear only as the goods (the scenario panels). The direction contract is in `.impeccable/surfaces/app-page-tsx.md`.
 
-## Tokens (app/globals.css :root)
+## Tokens (app/globals.css :root), 2026-10-09 v2: calm palette
 | Token | Value | Role |
 |---|---|---|
-| --kraft / -2 / -3 | #c58f55 / #b27a42 / #d8a873 | ground and section fields, always with the `--fibers` texture |
-| --ink / --ink-2 | #16206b / #0e1550 | all text on kraft; the dark price and contact bands |
-| --ink-soft | #33407f | secondary text, only on paper (contrast is too low on kraft) |
-| --stamp | #4338ca | stamps, focus ring, links on paper |
-| --ribbon / -2 | #d4152b / #a90f20 | primary buttons (.btn-tape), ribbons, second line of the H1 |
-| --foil, --pine | #e9c46a, #0f5a3c | only for candy wrappers and price chips |
-| --paper, --rule | #f4f6fa, #c3cce0 | waybill and form sheets; their ruling |
+| --frost / --frost-2 | #eef3f0 / #e1ebe5 | page ground; alternate sections |
+| --paper | #ffffff | cards, form, receipt |
+| --pine / --pine-2 / --pine-soft | #17312b / #22453c / #4d675f | text; dark bands (price, contact); secondary text |
+| --berry / --berry-2 | #c8423a / #a8352e | primary buttons, ribbon, stamps, second line of the H1 |
+| --honey / --honey-soft | #e8b654 / #f6e3b8 | the second tape, ticks, candy foil |
+| --sage, --tan | #a9c7b4, #dcbb8f | outlines of the reel numbers; carton of the parcel |
+| --rule | #d3dfd8 | hairlines |
 
 ## Type
-- Display: Unbounded 800, letter-spacing -0.02 to -0.03em. Used for H1, H2 (.title), H3 and the stamps.
-- Text: Golos Text 400/600. Numerals tabular in the phone number, waybill numbers and the date field.
+- Display: Unbounded 800. Text: Golos Text 400/600.
 
-## Components
-- `.btn-tape`, `.btn-ink`, `.btn-paper`: 52px tall, 3px corner radius, `translateY(2px)` on press.
-- `.stamp`: double rule plus grain mask. Dashed (`.stamp-yours`) means the visitor's move; solid means ours. State is never shown by hue alone.
-- `.sheet` (waybill), `.receipt` (torn edge, dotted leaders), `.paper-stack` (ruled checklist with ticks), `.wrapper` (candy with pleated twisted ends).
-- The form is a ruled paper sheet with numbered fields, underline inputs and chip radios.
+## Structure (references: sync-agency.com, zsklnskky.github.io/inkside)
+- Floating glass nav pill. It hides on scroll down, and the berry progress line shows how far the page is read.
+- Hero: the H1 is split into characters, with the mascot video pill set inside it like a word. Quick-start chips open the form pre-filled.
+- Tapes cross the section seams. The waybill steps scroll horizontally in a pinned reel on desktop (vertical cards below 1000px). The receipt prints, the checklist ticks, the FAQ cards open.
 
-## Motion
-- The waybill stamps press in with a scroll-driven animation (`animation-timeline: view()`). Without support, they stay visible.
-- The «ПРИНЯТО» stamp lands on the form after a successful submit.
-- `prefers-reduced-motion` disables all of it.
+## Motion (app/motion.tsx: GSAP 3.13 + ScrollTrigger + SplitText, Lenis)
+- Intro: a berry circle wipe, then the hero chars rise, the parcel drops with a bounce, the ribbon ties, the bow pops and the stamp spins in.
+- Scroll: masked character reveals on H2, a rise on [data-rise], parallax on the parcel, the reel with containerAnimation stamps, and candies swinging in from the sides.
+- `prefers-reduced-motion`: no Lenis and no tweens; the wipe is hidden.

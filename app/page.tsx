@@ -6,6 +6,8 @@ import { IconBox, IconCandy, IconCheck, IconForm, IconTruck } from './art';
 import { COMPANY } from './company';
 import Motion from './motion';
 
+const base = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
+
 const SCENARIOS = [
   {
     id: 'corporate',
@@ -16,11 +18,19 @@ const SCENARIOS = [
   },
   {
     id: 'kids',
-    tone: 'ribbon',
+    tone: 'berry',
     title: 'Детские сладкие подарки',
     text: 'Сладкие новогодние подарки для детей сотрудников — для профсоюзов и организаций. Подберём состав под возраст и бюджет.',
     cta: 'Собрать детские подарки',
   },
+] as const;
+
+// Quick starts under the hero: each one opens the request form pre-filled.
+const QUICK = [
+  ['?type=corporate', 'Подарки сотрудникам'],
+  ['?type=partners', 'Клиентам и партнёрам'],
+  ['?type=kids', 'Детям сотрудников'],
+  ['?type=corporate&logo=1', 'С логотипом компании'],
 ] as const;
 
 // Stamp outline carries the state: dashed = the visitor's move, solid = what we take on.
@@ -57,10 +67,17 @@ const FAQ = [
   { q: 'Как рассчитывается стоимость?', a: 'Цена складывается из состава, упаковки, нанесения логотипа, сборки и доставки. Расчёт пришлём после заявки.' },
 ];
 
+const NAV = [
+  ['#scenarios', 'Наборы'],
+  ['#order', 'Как заказать'],
+  ['#price', 'Цена'],
+  ['#faq', 'Вопросы'],
+] as const;
+
 const TAPE = ['Подарочные наборы оптом', 'Логотип на упаковке', 'Детские сладкие подарки', 'Доставка по Беларуси', 'Договор и безнал'];
 
 // Endless tape strip; the text is doubled so the loop is seamless.
-function Tape({ tone = 'red' }: { tone?: 'red' | 'gold' }) {
+function Tape({ tone = 'berry' }: { tone?: 'berry' | 'honey' }) {
   const items = [...TAPE, ...TAPE];
   return (
     <div className={`tape tape-${tone}`} aria-hidden="true">
@@ -70,13 +87,6 @@ function Tape({ tone = 'red' }: { tone?: 'red' | 'gold' }) {
     </div>
   );
 }
-
-const NAV = [
-  ['#scenarios', 'Наборы'],
-  ['#order', 'Как заказать'],
-  ['#price', 'Цена'],
-  ['#faq', 'Вопросы'],
-] as const;
 
 // Structured data for search engines: only facts from company.ts.
 const ORG_LD = {
@@ -95,31 +105,40 @@ export default function Home() {
     <>
       <Motion />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG_LD) }} />
-      <header className="topbar">
-        <div className="wrap topbar-in">
-          <a href="#top" className="topbar-logo" aria-label={`${COMPANY.brand} — наверх`}><Wordmark tone="dark" /></a>
-          <nav className="topbar-nav" aria-label="Разделы">
-            {NAV.map(([href, label]) => <a key={href} href={href}>{label}</a>)}
-          </nav>
-          <a className="topbar-phone" href={`tel:${COMPANY.phone}`}>{COMPANY.phoneView}</a>
-          <a className="btn btn-tape topbar-cta" href="#contact">Заявка</a>
-        </div>
+      <div className="wipe" aria-hidden="true" />
+
+      <header className="nav">
+        <a href="#top" className="nav-logo" aria-label={`${COMPANY.brand} — наверх`}><Wordmark tone="dark" /></a>
+        <nav className="nav-links" aria-label="Разделы">
+          {NAV.map(([href, label]) => <a key={href} href={href}>{label}</a>)}
+        </nav>
+        <a className="nav-phone" href={`tel:${COMPANY.phone}`}>{COMPANY.phoneView}</a>
+        <a className="btn btn-berry nav-cta" href="#contact">Заявка</a>
+        <span className="nav-progress" aria-hidden="true" />
       </header>
 
       <main id="top">
         <section className="hero" aria-labelledby="hero-title">
           <div className="wrap hero-in">
             <div className="hero-copy">
-              <h1 id="hero-title" className="hero-title"><span className="l1">Дарим смысл.</span> <span className="l2">Собираем праздник.</span></h1>
+              <h1 id="hero-title" className="hero-title">
+                <span className="l1 split">Дарим смысл.</span>
+                <span className="h1-pill" aria-hidden="true">
+                  <video muted loop playsInline autoPlay preload="metadata" poster={`${base}/hero-poster.jpg`} src={`${base}/hero-loop.mp4`} />
+                </span>
+                <span className="l2 split">Собираем праздник.</span>
+              </h1>
               <p className="hero-lead">
                 Новогодние подарочные наборы оптом для компаний и профсоюзов: состав под задачу,
                 логотип на упаковке, доставка по Беларуси.
               </p>
               <div className="hero-actions">
-                <a className="btn btn-tape" href="?type=corporate#contact">Сотрудникам и клиентам</a>
-                <a className="btn btn-ink" href="?type=kids#contact">Детям сотрудников</a>
+                <a className="btn btn-berry" href="?type=corporate#contact">Оставить заявку</a>
+                <a className="btn btn-ghost" href="#scenarios">Смотреть наборы</a>
               </div>
-              <p className="hero-deadline">К Новому 2027 году: чем раньше заявка, тем больше выбор состава и упаковки.</p>
+              <ul className="quick" aria-label="Быстрый старт">
+                {QUICK.map(([q, label]) => <li key={q}><a href={`${q}#contact`}>{label}</a></li>)}
+              </ul>
             </div>
 
             <div className="parcel" aria-hidden="true">
@@ -130,9 +149,9 @@ export default function Home() {
                 <span className="parcel-ribbon parcel-ribbon-v" />
                 <span className="parcel-ribbon parcel-ribbon-h" />
                 <svg className="parcel-bow" viewBox="0 0 120 70">
-                  <path d="M60 35C44 10 14 4 10 22s26 22 50 13zM60 35c16-25 46-31 50-13s-26 22-50 13z" fill="#d4152b" stroke="#a90f20" strokeWidth="3" />
-                  <path d="M56 38l-18 30h12l10-18 10 18h12L64 38z" fill="#a90f20" />
-                  <rect x="52" y="27" width="16" height="16" rx="4" fill="#a90f20" />
+                  <path d="M60 35C44 10 14 4 10 22s26 22 50 13zM60 35c16-25 46-31 50-13s-26 22-50 13z" fill="#c8423a" stroke="#a8352e" strokeWidth="3" />
+                  <path d="M56 38l-18 30h12l10-18 10 18h12L64 38z" fill="#a8352e" />
+                  <rect x="52" y="27" width="16" height="16" rx="4" fill="#a8352e" />
                 </svg>
               </div>
               <div className="parcel-tag">
@@ -144,20 +163,21 @@ export default function Home() {
               <span className="stamp stamp-hero">Соберём<br />под вас</span>
             </div>
           </div>
+          <p className="wrap hero-deadline">К Новому 2027 году: чем раньше заявка, тем больше выбор состава и упаковки.</p>
         </section>
 
         <Tape />
 
         <section className="scenarios" id="scenarios" aria-labelledby="scenarios-title">
           <div className="wrap">
-            <h2 id="scenarios-title" className="title" data-reveal>Два вида наборов — один подход</h2>
+            <h2 id="scenarios-title" className="title split">Два вида наборов — один подход</h2>
             <div className="scenario-grid">
-              {SCENARIOS.map((s, i) => (
-                <article key={s.id} className={`wrapper wrapper-${s.tone}`} data-reveal style={{ '--i': i } as React.CSSProperties}>
+              {SCENARIOS.map(s => (
+                <article key={s.id} className={`wrapper wrapper-${s.tone}`} data-rise>
                   <div className="wrapper-print">
                     <h3>{s.title}</h3>
                     <p>{s.text}</p>
-                    <a className="btn btn-paper" href={`?type=${s.id}#contact`}>{s.cta}</a>
+                    <a className="btn btn-ink" href={`?type=${s.id}#contact`}>{s.cta}</a>
                   </div>
                 </article>
               ))}
@@ -165,36 +185,32 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="order" id="order" aria-labelledby="order-title">
-          <div className="wrap">
-            <div className="sheet" data-reveal>
-              <div className="sheet-head">
-                <h2 id="order-title" className="title">Накладная на праздник</h2>
-                <span className="sheet-no" aria-hidden="true">№ НГ-2027 <i className="barcode" /></span>
-                <p>Пять шагов от заявки до отгрузки. Каждый — у нас в руках.</p>
-              </div>
-              <ol className="order-rows">
-                {ORDER.map(({ title, text, Icon, stamp, yours }, i) => (
-                  <li key={title} data-reveal style={{ '--i': i } as React.CSSProperties}>
-                    <span className="order-n">{i + 1}</span>
-                    <Icon className="order-icon" />
-                    <div>
-                      <h3>{title}</h3>
-                      <p>{text}</p>
-                    </div>
-                    <span className={`stamp stamp-row${yours ? ' stamp-yours' : ''}`} aria-hidden="true">{stamp}</span>
-                  </li>
-                ))}
-              </ol>
+        <section className="reel" id="order" aria-labelledby="order-title">
+          <div className="reel-pin">
+            <div className="wrap reel-head">
+              <h2 id="order-title" className="title split">Накладная на праздник</h2>
+              <p>Пять шагов от заявки до отгрузки. Каждый — у нас в руках.</p>
+              <span className="reel-bar" aria-hidden="true"><i /></span>
             </div>
+            <ol className="reel-track">
+              {ORDER.map(({ title, text, Icon, stamp, yours }, i) => (
+                <li key={title} className="reel-card">
+                  <span className="reel-n">{String(i + 1).padStart(2, '0')}</span>
+                  <Icon className="reel-icon" />
+                  <h3>{title}</h3>
+                  <p>{text}</p>
+                  <span className={`stamp stamp-row${yours ? ' stamp-yours' : ''}`} aria-hidden="true">{stamp}</span>
+                </li>
+              ))}
+            </ol>
           </div>
         </section>
 
         <section className="price" id="price" aria-labelledby="price-title">
           <div className="wrap price-in">
             <div>
-              <h2 id="price-title" className="title" data-reveal>Из чего складывается цена</h2>
-              <p className="lead">
+              <h2 id="price-title" className="title split">Из чего складывается цена</h2>
+              <p className="lead" data-rise>
                 Не «цена от» без расшифровки. В расчёте — каждая позиция: понятно, за что вы платите и где можно сэкономить.
               </p>
               {(COMPANY.minOrder || COMPANY.priceFrom) && (
@@ -204,9 +220,9 @@ export default function Home() {
                 </p>
               )}
             </div>
-            <ul className="receipt" data-reveal>
-              {PRICE.map((p, i) => (
-                <li key={p.item} style={{ '--i': i } as React.CSSProperties}><span>{p.item}</span><i aria-hidden="true" /><em>{p.note}</em></li>
+            <ul className="receipt">
+              {PRICE.map(p => (
+                <li key={p.item}><span>{p.item}</span><i aria-hidden="true" /><em>{p.note}</em></li>
               ))}
               <li className="receipt-total"><span>Итого</span><i aria-hidden="true" /><em>пришлём после заявки</em></li>
             </ul>
@@ -215,10 +231,10 @@ export default function Home() {
 
         <section className="papers" aria-labelledby="papers-title">
           <div className="wrap">
-            <h2 id="papers-title" className="title" data-reveal>Для бухгалтерии и профкома</h2>
-            <ul className="paper-stack" data-reveal>
-              {PAPERS.map((p, i) => (
-                <li key={p.title} style={{ '--i': i } as React.CSSProperties}>
+            <h2 id="papers-title" className="title split">Для бухгалтерии и профкома</h2>
+            <ul className="paper-stack">
+              {PAPERS.map(p => (
+                <li key={p.title}>
                   <span className="tick" aria-hidden="true" />
                   <div>
                     <h3>{p.title}</h3>
@@ -230,19 +246,19 @@ export default function Home() {
           </div>
         </section>
 
-        <Tape tone="gold" />
+        <Tape tone="honey" />
 
         <section className="faq-sec" id="faq" aria-labelledby="faq-title">
           <div className="wrap faq-in">
             <div>
-              <h2 id="faq-title" className="title" data-reveal>Вопросы и ответы</h2>
-              <p className="lead">
+              <h2 id="faq-title" className="title split">Вопросы и ответы</h2>
+              <p className="lead" data-rise>
                 {COMPANY.brand} — белорусская компания. Мы сами закупаем конфеты, упаковку и наполнение, собираем наборы и отгружаем их оптом.
               </p>
             </div>
-            <div className="faq" data-reveal>
-              {FAQ.map((item, i) => (
-                <details key={item.q} style={{ '--i': i } as React.CSSProperties}>
+            <div className="faq">
+              {FAQ.map(item => (
+                <details key={item.q} data-rise>
                   <summary>{item.q}</summary>
                   <p>{item.a}</p>
                 </details>
@@ -253,10 +269,10 @@ export default function Home() {
 
         <section className="contact" id="contact" aria-labelledby="contact-title">
           <div className="wrap contact-in">
-            <div className="contact-intro" data-reveal>
-              <h2 id="contact-title" className="title">Бланк заявки</h2>
-              <p>Заполните за минуту — вернёмся с составом, стоимостью и сроками.</p>
-              <p>Удобнее голосом? <a href={`tel:${COMPANY.phone}`}>{COMPANY.phoneView}</a></p>
+            <div className="contact-intro">
+              <h2 id="contact-title" className="title split">Бланк заявки</h2>
+              <p data-rise>Заполните за минуту — вернёмся с составом, стоимостью и сроками.</p>
+              <p data-rise>Удобнее голосом? <a href={`tel:${COMPANY.phone}`}>{COMPANY.phoneView}</a></p>
             </div>
             <LeadForm />
           </div>
