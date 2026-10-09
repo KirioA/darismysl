@@ -4,8 +4,8 @@ export const COMPANY = {
   brand: 'ДариСмысл',
   unp: '193961427',
   address: 'г. Минск, Ленинский район, ул. Якубова, д. 10',
-  phone: '+375445900578',
-  phoneView: '+375 44 590-05-78',
+  phone: '+375447444153',
+  phoneView: '+375 44 744-41-53',
   // Fill in when available; the footer and documents show these only if they are set.
   email: null as string | null,
   tradeRegister: null as string | null, // e.g. 'В Торговом реестре с 01.07.2025, № 000000'

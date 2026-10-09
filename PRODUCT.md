@@ -38,7 +38,7 @@ Their job is to get the right number of gift sets, on budget, delivered by a fix
 
 ## Evidence on Hand
 - No client list, reviews, case studies, photos of real sets or price list. Never fabricate any of them.
-- Real facts: legal entity, УНП 193961427, address, phone +375 44 590-05-78.
+- Real facts: legal entity, УНП 193961427, address, phone +375 44 744-41-53.
 
 ## Product Principles
 1. A request in under a minute: ask for quantity, budget and date, and nothing more.
