@@ -34,7 +34,7 @@ Their job is to get the right number of gift sets, on budget, delivered by a fix
 
 ## Brand Commitments
 - Name ДариСмысл, slogan «Дарим смысл. Собираем праздник.» Russian-language site.
-- Existing assets: the knitted pink mascot video with eye-tracking scrub (public/footer-scrub.mp4, app/gaze-frames.json) and the logo (public/logo.svg). The redesign may re-stage them.
+- Brand assets (2026-10-10): logo = gift box with a heart-shaped bow (public/logo.svg, sources in the knowledge base); flat 2D sticker kit in ink-outline postcard style (public/kit/*.webp). The knitted mascot and the Kenney 3D models were removed.
 
 ## Evidence on Hand
 - No client list, reviews, case studies, photos of real sets or price list. Never fabricate any of them.

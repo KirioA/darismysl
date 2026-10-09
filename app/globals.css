@@ -48,7 +48,7 @@ ul,ol{margin:0;padding:0;list-style:none}
 .nav-cta{min-height:44px;padding:0 22px;font-size:15px}
 
 .wordmark{display:inline-flex;align-items:center;gap:10px;font:700 20px/1 var(--display);letter-spacing:-.02em;color:var(--band);white-space:nowrap}
-.wordmark svg{width:1.2em;height:1.2em;flex:none}
+.wordmark img{width:1.35em;height:1.35em;flex:none;display:block}
 .wordmark b{font-weight:700;color:var(--berry)}
 .wordmark.dark{color:var(--pine)}
 
@@ -64,10 +64,6 @@ ul,ol{margin:0;padding:0;list-style:none}
 .parcel{position:relative;justify-self:center;width:min(100%,480px)}
 .parcel-box{position:relative;aspect-ratio:4/4.4;border-radius:20px;background:var(--band);box-shadow:inset 0 0 0 1px var(--line),0 24px 48px -24px rgba(23,49,43,.25)}
 .parcel-window{position:absolute;left:8%;right:8%;top:8%;height:70%;overflow:hidden;border-radius:14px;background:#c7a8b3}
-.footer-background{position:absolute;inset:0;pointer-events:none}
-.footer-background video{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover}
-.stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform:translate(-50%,-50%) scale(var(--s,1));transform-origin:center}
-.hat{position:absolute;inset:0;width:100%;height:100%}
 .parcel-ribbon{position:absolute;background:var(--berry)}
 .parcel-ribbon-h{left:0;right:0;top:84%;height:7%}
 .parcel-ribbon-v{top:78%;bottom:0;left:46.5%;width:7%}
@@ -312,3 +308,16 @@ ul,ol{margin:0;padding:0;list-style:none}
   *,*::before,*::after{animation:none!important;transition:none!important}
   .wipe{display:none}
 }
+
+/* ---------- Our stickers on the site (replace the knitted mascot and the 3D models) ---------- */
+.parcel-window{background:radial-gradient(circle at 50% 35%,#fff 0,#f6e3b8 70%)}
+.win-st{position:absolute;width:auto;filter:drop-shadow(0 10px 10px rgba(23,49,43,.22));animation:bobt 5s ease-in-out infinite}
+@keyframes bobt{0%,100%{translate:0 0}50%{translate:0 -8px}}
+.win-st:nth-child(2){animation-delay:-1.6s}.win-st:nth-child(3){animation-delay:-3.1s}.win-st:nth-child(4){animation-delay:-2.2s}
+.h1-pill{background:#f6e3b8}
+.h1-pill img{display:block;width:100%;height:100%;object-fit:contain;padding:6% 0;filter:drop-shadow(0 4px 4px rgba(23,49,43,.25))}
+img.floater{height:auto}
+.gift-sticker{position:absolute;width:auto;filter:drop-shadow(0 14px 14px rgba(23,49,43,.22));
+  translate:calc(var(--mx,0) * 18px * var(--d)) calc(var(--my,0) * 12px * var(--d) - var(--sc,0) * 40px * var(--d));
+  rotate:calc(var(--r) + var(--mx,0) * 6deg * var(--d));animation:bob 5.5s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}

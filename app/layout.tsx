@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   title: 'ДариСмысл — новогодние подарочные наборы оптом в Беларуси',
   description,
   icons: { icon: `${base}/logo.svg` },
-  openGraph: { title: 'ДариСмысл — подарочные наборы оптом', description, locale: 'ru_BY', type: 'website', images: [`${base}/hero-poster.jpg`] },
+  openGraph: { title: 'ДариСмысл — подарочные наборы оптом', description, locale: 'ru_BY', type: 'website', images: [`${base}/instagram/post1-cover.jpg`] },
 };
 
 export const viewport: Viewport = { themeColor: '#f6f8f5' };

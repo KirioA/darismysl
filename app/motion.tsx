@@ -62,7 +62,7 @@ export default function Motion() {
         .from('.stamp-hero', { scale: 2.6, rotate: -180, opacity: 0, duration: 0.8, ease: 'back.out(1.8)' }, 2.2);
 
       // Hero decor drifts against the cursor, each piece at its own depth.
-      const floaters = gsap.utils.toArray<HTMLElement>('.floater').map(el => ({
+      const floaters = gsap.utils.toArray<HTMLElement>('.floater, .win-st').map(el => ({
         depth: Number(el.dataset.depth),
         x: gsap.quickTo(el, 'x', { duration: 1, ease: 'power3.out' }),
         y: gsap.quickTo(el, 'y', { duration: 1, ease: 'power3.out' }),

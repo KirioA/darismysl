@@ -1,10 +1,9 @@
-import FooterBackground from './footer-background';
 import LeadForm from './lead-form';
 import { Wordmark } from './decor';
 import SiteFooter from './site-footer';
 import { COMPANY } from './company';
 import Motion from './motion';
-import Gifts3D from './gifts-3d';
+import Gifts2D from './gifts-2d';
 
 const base = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
 
@@ -62,28 +61,20 @@ const NAV = [
   ['#faq', 'Вопросы'],
 ] as const;
 
-// Floating decor around the hero: candies and stars that drift with the cursor.
+// Floating decor around the hero: our stickers drifting with the cursor at different depths.
 const FLOATERS = [
-  { kind: 'candy', tone: '#c8423a', x: 40, y: 88, s: 64, r: -18, d: 0.6 },
-  { kind: 'star', tone: '#e8b654', x: 46, y: 12, s: 34, r: 0, d: 1.2 },
-  { kind: 'candy', tone: '#22453c', x: 55, y: 8, s: 54, r: 24, d: 0.9 },
-  { kind: 'star', tone: '#c8423a', x: 92, y: 10, s: 26, r: 0, d: 1.5 },
-  { kind: 'candy', tone: '#e8b654', x: 94, y: 70, s: 58, r: -30, d: 0.7 },
-  { kind: 'star', tone: '#22453c', x: 3, y: 74, s: 30, r: 0, d: 1.3 },
+  { src: 'candy-cane', x: 40, y: 84, s: 70, r: -18, d: 0.6 },
+  { src: 'snowflake', x: 46, y: 10, s: 46, r: 0, d: 1.2 },
+  { src: 'tangerine', x: 55, y: 7, s: 52, r: 14, d: 0.9 },
+  { src: 'bell', x: 91, y: 8, s: 58, r: 12, d: 1.5 },
+  { src: 'mitten', x: 94, y: 68, s: 62, r: -18, d: 0.7 },
+  { src: 'snowflake', x: 3, y: 74, s: 40, r: 20, d: 1.3 },
 ] as const;
 
-function Floater({ kind, tone, x, y, s, r, d }: (typeof FLOATERS)[number]) {
-  const style = { left: `${x}%`, top: `${y}%`, width: s, '--r': `${r}deg` } as React.CSSProperties;
-  return kind === 'candy' ? (
-    <svg className="floater" data-depth={d} style={style} viewBox="0 0 120 60" aria-hidden="true">
-      <path d="M30 30L4 8v44zM90 30l26-22v44z" fill={tone} opacity=".75" />
-      <rect x="26" y="12" width="68" height="36" rx="18" fill={tone} />
-      <path d="M44 14v32M60 13v34M76 14v32" stroke="#fff" strokeOpacity=".35" strokeWidth="5" />
-    </svg>
-  ) : (
-    <svg className="floater" data-depth={d} style={style} viewBox="0 0 40 40" aria-hidden="true">
-      <path d="M20 0l5 15 15 5-15 5-5 15-5-15L0 20l15-5z" fill={tone} />
-    </svg>
+function Floater({ src, x, y, s, r, d }: (typeof FLOATERS)[number]) {
+  return (
+    <img className="floater" data-depth={d} src={`${base}/kit/${src}.webp`} alt="" aria-hidden="true"
+      style={{ left: `${x}%`, top: `${y}%`, width: s, '--r': `${r}deg` } as React.CSSProperties} />
   );
 }
 
@@ -133,7 +124,7 @@ export default function Home() {
               <h1 id="hero-title" className="hero-title">
                 <span className="l1 split">Дарим смысл.</span>
                 <span className="h1-pill" aria-hidden="true">
-                  <video muted loop playsInline autoPlay preload="metadata" poster={`${base}/hero-poster.jpg`} src={`${base}/hero-loop.mp4`} />
+                  <img src={`${base}/kit/gift-box.webp`} alt="" />
                 </span>
                 <span className="l2 split">Собираем праздник.</span>
               </h1>
@@ -148,7 +139,12 @@ export default function Home() {
 
             <div className="parcel" aria-hidden="true">
               <div className="parcel-box">
-                <div className="parcel-window"><FooterBackground /></div>
+                <div className="parcel-window">
+                  <img className="win-st" src={`${base}/kit/fir-tree.webp`} alt="" data-depth="0.5" style={{ left: '8%', bottom: '4%', height: '86%' }} />
+                  <img className="win-st" src={`${base}/kit/gingerbread.webp`} alt="" data-depth="1.1" style={{ left: '56%', bottom: '6%', height: '52%' }} />
+                  <img className="win-st" src={`${base}/kit/cocoa-mug.webp`} alt="" data-depth="1.4" style={{ left: '40%', bottom: '2%', height: '34%' }} />
+                  <img className="win-st" src={`${base}/kit/snowflake.webp`} alt="" data-depth="0.3" style={{ left: '70%', top: '8%', height: '20%' }} />
+                </div>
                 <span className="parcel-flap" />
                 <span className="parcel-ribbon parcel-ribbon-top" />
                 <span className="parcel-ribbon parcel-ribbon-v" />
@@ -176,7 +172,7 @@ export default function Home() {
             <div className="scenario-grid">
               {SCENARIOS.map(s => (
                 <article key={s.id} className={`gift-card gift-${s.tone}`}>
-                  <Gifts3D scene={s.id} />
+                  <Gifts2D scene={s.id} />
                   <div className="gift-text">
                     <span className="eyebrow">{s.eyebrow}</span>
                     <h3>{s.title}</h3>
