@@ -13,9 +13,10 @@ const sets = (n: number) => {
   return d === 1 && h !== 11 ? 'набор' : d >= 2 && d <= 4 && (h < 12 || h > 14) ? 'набора' : 'наборов';
 };
 
-export default function LeadForm() {
+// defaultType: landing pages open the form with their own recipient preselected.
+export default function LeadForm({ defaultType = 'corporate' }: { defaultType?: string }) {
   const [status, setStatus] = useState<Status>('idle');
-  const [type, setType] = useState<string>('corporate');
+  const [type, setType] = useState<string>(defaultType);
   const [logo, setLogo] = useState(false);
   const [sent, setSent] = useState<{ type: string; quantity: string } | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);

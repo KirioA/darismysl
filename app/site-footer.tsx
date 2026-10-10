@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Wordmark } from './decor';
 import { COMPANY } from './company';
+import { LANDINGS } from './landings';
 
 export default function SiteFooter({ home = false }: { home?: boolean }) {
   const base = home ? '' : '/';
@@ -21,6 +22,13 @@ export default function SiteFooter({ home = false }: { home?: boolean }) {
             <li><a href={`${base}#terms`}>Условия</a></li>
             <li><a href={`${base}#faq`}>Вопросы</a></li>
             <li><a href={`${base}#contact`}>Оставить заявку</a></li>
+          </ul>
+        </nav>
+
+        <nav className="f-col" aria-label="Подарки">
+          <h3>Подарки</h3>
+          <ul>
+            {LANDINGS.map(l => <li key={l.slug}><Link href={`/${l.slug}`}>{l.nav}</Link></li>)}
           </ul>
         </nav>
 

@@ -8,8 +8,8 @@ import Gifts2D from './gifts-2d';
 const base = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
 
 const SCENARIOS = [
-  { id: 'corporate', tone: 'pine', eyebrow: 'Для компаний', title: 'Сотрудникам и партнёрам', text: 'Состав под повод и бюджет, ваш логотип на упаковке.', cta: 'Собрать набор' },
-  { id: 'kids', tone: 'berry', eyebrow: 'Для профсоюзов', title: 'Детям сотрудников', text: 'Сладкие подарки для профсоюзов — состав под возраст.', cta: 'Собрать подарки' },
+  { id: 'corporate', tone: 'pine', eyebrow: 'Для компаний', title: 'Сотрудникам и партнёрам', text: 'Состав под повод и бюджет, ваш логотип на упаковке.', cta: 'Собрать набор', more: '/korporativnye-podarki' },
+  { id: 'kids', tone: 'berry', eyebrow: 'Для профсоюзов', title: 'Детям сотрудников', text: 'Сладкие подарки для профсоюзов — состав под возраст.', cta: 'Собрать подарки', more: '/detskie-novogodnie-podarki' },
 ] as const;
 
 // Stamp outline carries the state: dashed = the visitor's move, solid = what we take on.
@@ -200,6 +200,7 @@ export default function Home() {
                     <h3>{s.title}</h3>
                     <p>{s.text}</p>
                     <a className="link-arrow" href={`?type=${s.id}#contact`}>{s.cta}</a>
+                    <a className="gift-more" href={`${base}${s.more}`}>Подробнее</a>
                   </div>
                 </article>
               ))}
