@@ -207,7 +207,10 @@ ul,ol{margin:0;padding:0;list-style:none}
 .seal text{fill:currentColor}
 
 /* ---------- Contact form ---------- */
-.contact-in{display:grid;grid-template-columns:.7fr 1.3fr;gap:clamp(32px,6vw,96px);align-items:start}
+.contact-in{display:grid;grid-template-columns:.7fr 1.3fr;gap:clamp(32px,6vw,96px);align-items:stretch}
+/* left column is exactly as tall as the form: the sticker art only takes the space left over */
+.contact-intro{display:flex;flex-direction:column;min-height:0}
+.lead-form{align-self:start}
 .contact-intro p{margin-top:16px;max-width:30ch}
 .contact-intro a{font-weight:600;color:var(--pine);text-decoration:none;white-space:nowrap}
 .lead-form{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:32px;border-radius:20px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line)}
@@ -416,7 +419,7 @@ img.floater{height:auto}
 @media(prefers-reduced-motion:reduce){.lp-st{animation:none}}
 
 /* ---------- After-request block (left of the lead form) ---------- */
-.after{margin-top:clamp(28px,3vw,40px)}
+.after{display:flex;flex:1 1 auto;flex-direction:column;min-height:0;margin-top:clamp(28px,3vw,40px)}
 .after h3{font:700 20px/1.2 var(--display);letter-spacing:-.01em;color:var(--pine)}
 .after-steps{display:grid;gap:16px;margin:18px 0 0;padding:0;list-style:none}
 .after-steps li{display:flex;gap:14px;align-items:flex-start}
@@ -425,10 +428,13 @@ img.floater{height:auto}
 .after-steps b{display:block;color:var(--pine)}
 .after-steps p{margin:2px 0 0;font-size:15px;color:var(--muted)}
 .after-ig{margin-top:22px;gap:10px;width:100%;max-width:340px}
-.after-art{position:relative;width:min(300px,80%);aspect-ratio:1.15;margin-top:28px}
-.after-art img{position:absolute;height:auto;filter:drop-shadow(0 14px 14px rgba(23,49,43,.22))}
-.aa-box{left:0;bottom:0;width:78%;z-index:2}
-.aa-gb{left:34%;top:4%;width:36%;z-index:1;rotate:-8deg;animation:bobt 4s ease-in-out infinite}
-.aa-ball{right:0;top:0;width:24%;rotate:12deg;animation:bobt 5s -1.5s ease-in-out infinite}
+.after-art{position:relative;flex:1 1 0;min-height:0;max-height:300px;width:min(320px,90%);margin-top:20px;overflow:hidden}
+/* too little room left (e.g. home page with the seal): drop the art instead of showing a sliver */
+.after-art{container-type:size}
+@container (max-height:120px){.after-art img{display:none}}
+.after-art img{position:absolute;width:auto;filter:drop-shadow(0 10px 10px rgba(23,49,43,.22))}
+.aa-box{left:0;bottom:0;height:82%;z-index:2}
+.aa-gb{left:34%;top:6%;height:46%;z-index:1;rotate:-8deg;animation:bobt 4s ease-in-out infinite}
+.aa-ball{left:68%;top:6%;height:30%;rotate:12deg;animation:bobt 5s -1.5s ease-in-out infinite}
 @media(max-width:1000px){.after-art{display:none}}
 @media(prefers-reduced-motion:reduce){.aa-gb,.aa-ball{animation:none}}
