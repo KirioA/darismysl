@@ -253,7 +253,24 @@ export default function Home() {
 
         <section className="faq-sec" id="faq" aria-labelledby="faq-title">
           <div className="wrap faq-in">
-            <h2 id="faq-title" className="title fill">Вопросы</h2>
+            <div className="faq-side">
+              <h2 id="faq-title" className="title fill">Вопросы</h2>
+              {/* Fills the empty column: a direct line for questions the list does not answer. */}
+              <aside className="ask-card" aria-label="Задать вопрос" data-rise>
+                <img className="ask-phone" src={`${base}/kit/phone.webp`} alt="" aria-hidden="true" />
+                <h3>Не нашли ответ?</h3>
+                <p>Спросите напрямую — подскажем состав, упаковку и сроки под вашу задачу.</p>
+                <ul className="ask-facts">
+                  <li>от 1 набора</li>
+                  <li>заказы до {COMPANY.orderDeadline}</li>
+                  <li>доставка по РБ бесплатно</li>
+                </ul>
+                <div className="ask-actions">
+                  <a className="btn btn-berry" href={`tel:${COMPANY.phone}`}>{COMPANY.phoneView}</a>
+                  <a className="btn btn-line" href={COMPANY.instagramUrl} target="_blank" rel="noopener noreferrer">Написать в Instagram</a>
+                </div>
+              </aside>
+            </div>
             <div className="faq">
               {FAQ.map(item => (
                 <details key={item.q} data-rise>
