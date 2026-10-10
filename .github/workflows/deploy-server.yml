@@ -1,0 +1,30 @@
+name: Deploy to server
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: server-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      # The key in DEPLOY_SSH_KEY is pinned on the server to a forced command
+      # (/opt/darismysl/deploy.sh: pull main, npm ci, build, restart), so it can do nothing else.
+      - name: Trigger deploy on the server
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          HOST: 87.232.67.193
+          HOST_KEY: "87.232.67.193 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBcg0pJTivlKxT7rlSkzq0qCALNGtIlO9Dv2SU2GwD1s"
+        run: |
+          set -o pipefail
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy && chmod 600 ~/.ssh/deploy
+          printf '%s\n' "$HOST_KEY" > ~/.ssh/known_hosts
+          ssh -i ~/.ssh/deploy -o BatchMode=yes -o StrictHostKeyChecking=yes root@"$HOST" 2>&1 | grep -v setlocale
+          curl -fsS -o /dev/null -w 'public %{http_code}\n' "http://$HOST/"
