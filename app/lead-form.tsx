@@ -1,16 +1,24 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { COMPANY, PROCESSOR } from './company';
 import { GIFT_TYPES } from './lead-types';
 
 type Status = 'idle' | 'sending' | 'sent' | 'error';
 
+// 1 набор, 2 набора, 5 наборов
+const sets = (n: number) => {
+  const d = n % 10, h = n % 100;
+  return d === 1 && h !== 11 ? 'набор' : d >= 2 && d <= 4 && (h < 12 || h > 14) ? 'набора' : 'наборов';
+};
+
 export default function LeadForm() {
   const [status, setStatus] = useState<Status>('idle');
   const [type, setType] = useState<string>('corporate');
   const [logo, setLogo] = useState(false);
+  const [sent, setSent] = useState<{ type: string; quantity: string } | null>(null);
+  const dialog = useRef<HTMLDialogElement>(null);
 
   // Scenario buttons link here with ?type=…, so the request starts pre-filled.
   useEffect(() => {
@@ -37,6 +45,8 @@ export default function LeadForm() {
       form.reset();
       setLogo(false);
       setStatus('sent');
+      setSent({ type: GIFT_TYPES.find(([id]) => id === data.type)?.[1] ?? '', quantity: String(data.quantity ?? '') });
+      dialog.current?.showModal();
     } catch {
       setStatus('error');
     }
@@ -112,14 +122,38 @@ export default function LeadForm() {
       </div>
 
       <div className="wide form-actions">
-        <button type="submit" className="btn btn-berry" disabled={status === 'sending'}>
-          {status === 'sending' ? 'Отправляем…' : 'Отправить заявку'}
+        <button type="submit" className="btn btn-berry" disabled={status === 'sending'} aria-busy={status === 'sending'}>
+          {status === 'sending' ? <><span className="spinner" aria-hidden="true" />Отправляем заявку…</> : 'Отправить заявку'}
         </button>
       </div>
       <p className="wide form-status" role="status" aria-live="polite">
         {status === 'sent' && 'Заявка принята. Скоро свяжемся.'}
         {status === 'error' && <>Не отправилось. Позвоните: <a href={`tel:${COMPANY.phone}`}>{COMPANY.phoneView}</a></>}
       </p>
+
+      {/* Native <dialog>: Esc, focus trap and backdrop come from the browser. */}
+      <dialog ref={dialog} className="sent-dialog" aria-labelledby="sent-title" onClick={e => e.target === e.currentTarget && dialog.current?.close()}>
+        <div className="sent-card">
+          <div className="sent-art" aria-hidden="true">
+            {Array.from({ length: 10 }, (_, i) => <i key={i} style={{ '--i': i } as React.CSSProperties} />)}
+            <img src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/kit/gift-box.webp`} alt="" />
+          </div>
+          <h3 id="sent-title">Заявка у нас!</h3>
+          <p>
+            Свяжемся с вами по указанному контакту и подберём состав
+            {sent?.quantity ? <> на <b>{sent.quantity} {sets(Number(sent.quantity))}</b></> : null}
+            {sent?.type ? <> — {sent.type.toLowerCase()}</> : null}.
+          </p>
+          <p className="sent-ig-note">Пока ждёте — загляните в наш Instagram: там наборы, идеи и как мы работаем.</p>
+          <div className="sent-actions">
+            <a className="btn btn-berry" href={`https://www.instagram.com/${COMPANY.instagram}/`} target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" /></svg>
+              @{COMPANY.instagram}
+            </a>
+            <button type="button" className="btn btn-line" onClick={() => dialog.current?.close()}>Закрыть</button>
+          </div>
+        </div>
+      </dialog>
     </form>
   );
 }
