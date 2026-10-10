@@ -14,8 +14,10 @@ export const COMPANY = {
   minOrder: null as string | null,
   priceFrom: null as string | null,
   // Versions of the legal texts; sent with every request as proof of consent.
-  consentVersion: '2026-10-08',
-  policyDate: '8 октября 2026 г.',
+  consentVersion: '2026-10-10',
+  policyDate: '10 октября 2026 г.',
+  // The site's server: requests pass through it and are not stored there.
+  serverCountry: 'Республике Беларусь',
 } as const;
 
 export const AUTHORITY = {
@@ -26,9 +28,26 @@ export const AUTHORITY = {
   site: 'cpd.by',
 } as const;
 
-export const PROCESSOR = {
-  name: 'Google LLC',
-  country: 'США',
-  address: '1600 Amphitheatre Parkway, Mountain View, California 94043, USA',
-  service: 'почтовый сервис Gmail',
-} as const;
+// Authorised persons (processors) that receive every site request, abroad: hence the cross-border consent.
+export const PROCESSORS = [
+  {
+    name: 'Telegram Messenger Inc.',
+    country: 'Британские Виргинские острова',
+    // Telegram does not publish a street address; registration and operational base per public sources.
+    address: 'Британские Виргинские острова (место регистрации); операционный центр — г. Дубай, Объединённые Арабские Эмираты',
+    service: 'мессенджер Telegram',
+    does: 'доставка уведомления о заявке в чат Оператора и хранение сообщения в истории чата',
+    states: 'на Британских Виргинских островах, в ОАЭ и иных странах размещения серверов Telegram',
+  },
+  {
+    name: 'Google LLC',
+    country: 'США',
+    address: '1600 Amphitheatre Parkway, Mountain View, California 94043, USA',
+    service: 'почтовый сервис Gmail',
+    does: 'приём, хранение и обработка электронных писем с заявками с сайта и последующей переписки',
+    states: 'в США и иных странах размещения серверов Google',
+  },
+] as const;
+
+// "Telegram Messenger Inc. (Британские Виргинские острова) и Google LLC (США)"
+export const PROCESSORS_TEXT = PROCESSORS.map(p => `${p.name} (${p.country})`).join(' и ');

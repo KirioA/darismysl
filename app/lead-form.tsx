@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
-import { COMPANY, PROCESSOR } from './company';
+import { COMPANY, PROCESSORS } from './company';
 import { GIFT_TYPES } from './lead-types';
 
 type Status = 'idle' | 'sending' | 'sent' | 'error';
@@ -111,7 +111,7 @@ export default function LeadForm() {
         <label className="check">
           <input type="checkbox" name="consent_transfer" value="да" required />
           <span>
-            Согласен(на) на <Link href="/consent#transfer" target="_blank">трансграничную передачу</Link> данных ({PROCESSOR.country}, {PROCESSOR.name}).
+            Согласен(на) на <Link href="/consent#transfer" target="_blank">трансграничную передачу</Link> данных ({PROCESSORS.map(p => `${p.service.split(' ').pop()} — ${p.country}`).join('; ')}).
           </span>
         </label>
         <details className="operator-note">
