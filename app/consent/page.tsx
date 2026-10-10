@@ -4,7 +4,10 @@ import { Clause, LegalPage } from '../legal';
 import { AUTHORITY, COMPANY, PROCESSORS, PROCESSORS_TEXT } from '../company';
 
 export const metadata: Metadata = {
-  title: 'Согласие на обработку персональных данных — ДариСмысл',
+  // Legal text: keep it out of search results, links still followed.
+  alternates: { canonical: '/consent' },
+  robots: { index: false, follow: true },
+  title: 'Согласие на обработку персональных данных',
   description: 'Текст согласия на обработку персональных данных при отправке заявки через сайт ДариСмысл.',
 };
 

@@ -10,7 +10,7 @@ export default function SiteFooter({ home = false }: { home?: boolean }) {
       <div className="wrap footer-grid">
         <div className="f-brand">
           <Link href="/" aria-label={`${COMPANY.brand} — на главную`}><Wordmark tone="dark" /></Link>
-          <p>Подарочные наборы оптом. Собираем под ваш заказ и отгружаем к нужной дате.</p>
+          <p>Новогодние подарочные наборы оптом в Минске. Собираем под ваш заказ, бесплатно доставляем по всей Беларуси.</p>
         </div>
 
         <nav className="f-col" aria-label="Разделы сайта">

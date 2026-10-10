@@ -25,7 +25,7 @@ const PRICE = [
   ['Упаковка', 'под повод'],
   ['Логотип', 'по желанию'],
   ['Сборка', 'своими силами'],
-  ['Доставка', 'по Беларуси'],
+  ['Доставка', 'бесплатно по Беларуси'],
 ] as const;
 const PAPERS = [
   ['Договор', 'есть'],
@@ -47,11 +47,16 @@ function Seal() {
   );
 }
 
+// Also published as FAQPage structured data: keep answers factual (owner-confirmed, 2026-10-10).
 const FAQ = [
-  { q: 'Соберёте под наш бюджет?', a: 'Да. Назовите бюджет на один набор и количество — предложим состав.' },
+  { q: 'Какой минимальный заказ?', a: 'От 1 набора. Собираем и для небольшой команды, и для крупного предприятия.' },
+  { q: 'До какого числа можно заказать?', a: `Заказы на Новый год принимаем до ${COMPANY.orderDeadline}. Чем раньше заявка, тем шире выбор состава и упаковки.` },
+  { q: 'Соберёте под наш бюджет?', a: 'Да. Назовите бюджет на один набор и количество — пришлём коммерческое предложение с подробным составом и упаковкой.' },
+  { q: 'Что можно положить в набор?', a: 'Сладости, а также любые продукты и напитки, кроме алкоголя. Упаковка — от картонной коробки до жестяной банки и мягкой игрушки.' },
   { q: 'Как нанести логотип?', a: 'Наносим на упаковку. Вариант и макет согласуем до сборки.' },
-  { q: 'Какие сроки?', a: 'Зависят от состава и объёма — назовём после заявки. Перед Новым годом лучше заказывать заранее.' },
-  { q: 'Сколько стоит?', a: 'Считаем после заявки: состав, упаковка, логотип, сборка и доставка — каждой строкой.' },
+  { q: 'Как оплатить?', a: 'Только безналичный расчёт по договору, с закрывающими документами.' },
+  { q: 'Сколько стоит доставка?', a: 'Доставка по Минску и по всей Беларуси бесплатная.' },
+  { q: 'Сколько стоит набор?', a: 'Считаем после заявки: состав, упаковка, логотип, сборка — каждой строкой в коммерческом предложении.' },
 ];
 
 const NAV = [
@@ -88,22 +93,37 @@ function Marquee({ words, dir = 1 }: { words: string; dir?: 1 | -1 }) {
 }
 
 // Structured data for search engines: only facts from company.ts.
-const ORG_LD = {
+// Structured data for search engines: the company, the site and the FAQ shown on the page.
+const LD = {
   '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: COMPANY.name,
-  alternateName: COMPANY.brand,
-  telephone: COMPANY.phone,
-  taxID: COMPANY.unp,
-  address: { '@type': 'PostalAddress', streetAddress: COMPANY.address, addressCountry: 'BY' },
-  areaServed: 'BY',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': `${COMPANY.site}/#org`,
+      name: COMPANY.brand,
+      legalName: COMPANY.name,
+      url: COMPANY.site,
+      logo: `${COMPANY.site}/logo.svg`,
+      telephone: COMPANY.phone,
+      taxID: COMPANY.unp,
+      address: { '@type': 'PostalAddress', streetAddress: 'ул. Якубова, д. 10', addressLocality: 'Минск', addressCountry: 'BY' },
+      areaServed: { '@type': 'Country', name: 'Беларусь' },
+      sameAs: [COMPANY.instagramUrl],
+      description: 'Новогодние подарочные наборы оптом для компаний и профсоюзов: от 1 набора, логотип на упаковке, бесплатная доставка по Беларуси.',
+    },
+    { '@type': 'WebSite', '@id': `${COMPANY.site}/#site`, url: COMPANY.site, name: COMPANY.brand, inLanguage: 'ru-BY', publisher: { '@id': `${COMPANY.site}/#org` } },
+    {
+      '@type': 'FAQPage',
+      mainEntity: FAQ.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+    },
+  ],
 };
 
 export default function Home() {
   return (
     <>
       <Motion />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG_LD) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(LD).replace(/</g, '\\u003c') }} />
       <div className="wipe" aria-hidden="true" />
 
       <header className="nav">
@@ -122,6 +142,8 @@ export default function Home() {
           <div className="wrap hero-in">
             <div className="hero-copy">
               <h1 id="hero-title" className="hero-title">
+                {/* Search engines read the h1: the plain-words offer goes first, the slogan follows. */}
+                <span className="h1-kicker">Новогодние подарочные наборы оптом</span>
                 <span className="l1 split">Дарим смысл.</span>
                 <span className="h1-pill" aria-hidden="true">
                   <img src={`${base}/kit/gift-box.webp`} alt="" />

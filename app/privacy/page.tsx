@@ -4,7 +4,10 @@ import { Clause, LegalPage, Purpose } from '../legal';
 import { AUTHORITY, COMPANY, PROCESSORS, PROCESSORS_TEXT } from '../company';
 
 export const metadata: Metadata = {
-  title: 'Политика в отношении обработки персональных данных — ДариСмысл',
+  // Legal text: keep it out of search results, links still followed.
+  alternates: { canonical: '/privacy' },
+  robots: { index: false, follow: true },
+  title: 'Политика в отношении обработки персональных данных',
   description: 'Как ООО «ДариСмысл» обрабатывает и защищает персональные данные посетителей сайта и контрагентов.',
 };
 

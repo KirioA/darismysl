@@ -7,15 +7,33 @@ import '@fontsource/golos-text/latin-400.css';
 import '@fontsource/golos-text/latin-600.css';
 import 'lenis/dist/lenis.css';
 import './globals.css';
+import { COMPANY } from './company';
 
 const base = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
-const description = 'Новогодние подарочные наборы оптом для компаний и профсоюзов: состав под задачу, логотип на упаковке, детские сладкие подарки, доставка по Беларуси.';
+const title = 'Новогодние подарочные наборы оптом в Минске и Беларуси — ДариСмысл';
+const description =
+  'Корпоративные новогодние подарки для сотрудников, клиентов и детей сотрудников. От 1 набора, логотип на упаковке, состав под бюджет, бесплатная доставка по Беларуси. Заказы до 20 декабря.';
 
 export const metadata: Metadata = {
-  title: 'ДариСмысл — новогодние подарочные наборы оптом в Беларуси',
+  // Absolute URLs (canonical, og:image) always point at the main domain, so copies of the site do not compete with it.
+  metadataBase: new URL(COMPANY.site),
+  title: { default: title, template: `%s — ${COMPANY.brand}` },
   description,
+  alternates: { canonical: '/' },
+  robots: { index: true, follow: true },
   icons: { icon: `${base}/logo.svg` },
-  openGraph: { title: 'ДариСмысл — подарочные наборы оптом', description, locale: 'ru_BY', type: 'website', images: [`${base}/instagram/post1-cover.jpg`] },
+  openGraph: {
+    type: 'website',
+    locale: 'ru_BY',
+    url: '/',
+    siteName: COMPANY.brand,
+    title,
+    description,
+    images: [{ url: '/instagram/post1-cover.jpg', width: 1080, height: 1440, alt: 'ДариСмысл — новогодние подарочные наборы' }],
+  },
+  twitter: { card: 'summary_large_image', title, description, images: ['/instagram/post1-cover.jpg'] },
+  // Fill in after adding the site to Yandex Webmaster / Google Search Console.
+  verification: { yandex: COMPANY.verifyYandex ?? undefined, google: COMPANY.verifyGoogle ?? undefined },
 };
 
 export const viewport: Viewport = { themeColor: '#f6f8f5' };

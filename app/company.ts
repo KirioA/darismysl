@@ -2,6 +2,8 @@
 export const COMPANY = {
   name: 'ООО «ДариСмысл»',
   brand: 'ДариСмысл',
+  // Canonical address of the site: canonical links, sitemap, Open Graph, structured data.
+  site: 'https://darismysl.by',
   unp: '193961427',
   address: 'г. Минск, Ленинский район, ул. Якубова, д. 10',
   phone: '+375447444153',
@@ -11,8 +13,14 @@ export const COMPANY = {
   email: null as string | null,
   tradeRegister: null as string | null, // e.g. 'В Торговом реестре с 01.07.2025, № 000000'
   // Shown on the site only when set, e.g. 'от 20 наборов' / 'от 25 BYN за набор'.
-  minOrder: null as string | null,
+  minOrder: 'от 1 набора' as string | null,
   priceFrom: null as string | null,
+  // Confirmed by the owner (2026-10-10): see knowledge base facts.md.
+  orderDeadline: '20 декабря',
+  instagramUrl: 'https://www.instagram.com/darismysl.by/',
+  // Site verification codes from Yandex Webmaster and Google Search Console (content of their meta tags).
+  verifyYandex: null as string | null,
+  verifyGoogle: null as string | null,
   // Versions of the legal texts; sent with every request as proof of consent.
   consentVersion: '2026-10-10',
   policyDate: '10 октября 2026 г.',
