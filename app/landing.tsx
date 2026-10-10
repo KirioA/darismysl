@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Wordmark } from './decor';
 import LeadForm from './lead-form';
 import SiteFooter from './site-footer';
+import AfterRequest from './after-request';
 import { COMPANY } from './company';
 import { LANDINGS, type Landing } from './landings';
 
@@ -130,6 +131,7 @@ export default function LandingPage({ l }: { l: Landing }) {
               <h2 id="form-title" className="title">Заявка</h2>
               <p>Опишите задачу — пришлём коммерческое предложение с составом и упаковкой.</p>
               <p><a href={`tel:${COMPANY.phone}`}>{COMPANY.phoneView}</a></p>
+              <AfterRequest />
             </div>
             <LeadForm defaultType={l.formType} />
           </div>

@@ -4,6 +4,7 @@ import SiteFooter from './site-footer';
 import { COMPANY } from './company';
 import Motion from './motion';
 import Gifts2D from './gifts-2d';
+import AfterRequest from './after-request';
 
 const base = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
 
@@ -290,6 +291,7 @@ export default function Home() {
               <h2 id="contact-title" className="title">Заявка</h2>
               <p>Ответим с составом, ценой и сроками.</p>
               <p><a href={`tel:${COMPANY.phone}`}>{COMPANY.phoneView}</a></p>
+              <AfterRequest />
             </div>
             <LeadForm />
           </div>
