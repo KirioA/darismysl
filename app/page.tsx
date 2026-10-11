@@ -104,6 +104,7 @@ const LD = {
       '@id': `${COMPANY.site}/#org`,
       name: COMPANY.brand,
       legalName: COMPANY.name,
+      alternateName: ['Дари Смысл', 'DariSmysl'],
       url: COMPANY.site,
       logo: `${COMPANY.site}/icon.png`,
       image: [`${COMPANY.site}/og-square.jpg`, `${COMPANY.site}/og.jpg`],
