@@ -23,7 +23,6 @@ export const metadata: Metadata = {
   description,
   alternates: { canonical: '/' },
   robots: { index: true, follow: true },
-  icons: { icon: `${base}/logo.svg` },
   openGraph: {
     type: 'website',
     locale: 'ru_BY',

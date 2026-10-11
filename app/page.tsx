@@ -113,7 +113,7 @@ const LD = {
       sameAs: [COMPANY.instagramUrl],
       description: 'Новогодние подарочные наборы оптом для компаний и профсоюзов: от 1 набора, логотип на упаковке, бесплатная доставка по Беларуси.',
     },
-    { '@type': 'WebSite', '@id': `${COMPANY.site}/#site`, url: COMPANY.site, name: COMPANY.brand, inLanguage: 'ru-BY', publisher: { '@id': `${COMPANY.site}/#org` } },
+    { '@type': 'WebSite', '@id': `${COMPANY.site}/#site`, url: `${COMPANY.site}/`, name: COMPANY.brand, alternateName: ['Дари Смысл', 'DariSmysl'], inLanguage: 'ru-BY', publisher: { '@id': `${COMPANY.site}/#org` } },
     {
       '@type': 'FAQPage',
       mainEntity: FAQ.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
