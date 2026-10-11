@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { COMPANY, PROCESSORS } from './company';
 import { GIFT_TYPES } from './lead-types';
+import { goal } from './analytics';
 
 // "Соберите набор" quiz: any element with data-quiz opens it (data-quiz="kids" preselects the recipient).
 // Answers go to /api/lead as one request, like the form.
@@ -81,6 +82,7 @@ export default function Quiz() {
       });
       if (!res.ok) throw new Error(String(res.status));
       setStatus('sent');
+      goal('quiz_submit');
     } catch {
       setStatus('error');
     }

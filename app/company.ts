@@ -21,9 +21,16 @@ export const COMPANY = {
   // Site verification codes from Yandex Webmaster and Google Search Console (content of their meta tags).
   verifyYandex: null as string | null,
   verifyGoogle: null as string | null,
+  // Yandex Metrika counter; analytics loads only after the visitor accepts cookies.
+  metrikaId: null as number | null,
+  // Google Ads tag (gtag.js); also loads only after consent.
+  googleAdsId: 'AW-18506339080' as string | null,
+  // Google Ads conversion labels (Goals → Conversions → action → tag setup); fill in when created.
+  adsLeadLabel: null as string | null,
+  cookiePolicyVersion: '2026-10-11',
   // Versions of the legal texts; sent with every request as proof of consent.
   consentVersion: '2026-10-10',
-  policyDate: '10 октября 2026 г.',
+  policyDate: '11 октября 2026 г.',
   // The site's server: requests pass through it and are not stored there.
   serverCountry: 'Республике Беларусь',
 } as const;

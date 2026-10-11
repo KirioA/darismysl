@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Wordmark } from './decor';
 import { COMPANY } from './company';
 import { LANDINGS } from './landings';
+import { CookieSettingsButton } from './analytics';
 
 export default function SiteFooter({ home = false }: { home?: boolean }) {
   const base = home ? '' : '/';
@@ -46,6 +47,8 @@ export default function SiteFooter({ home = false }: { home?: boolean }) {
           <ul>
             <li><Link href="/privacy">Политика в отношении обработки персональных данных</Link></li>
             <li><Link href="/consent">Согласие на обработку персональных данных</Link></li>
+            <li><Link href="/cookies">Политика в отношении файлов cookie</Link></li>
+            <li><CookieSettingsButton /></li>
           </ul>
         </nav>
       </div>

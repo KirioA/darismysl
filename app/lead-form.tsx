@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { COMPANY, PROCESSORS } from './company';
 import { GIFT_TYPES } from './lead-types';
+import { goal } from './analytics';
 
 type Status = 'idle' | 'sending' | 'sent' | 'error';
 
@@ -48,6 +49,7 @@ export default function LeadForm({ defaultType = 'corporate' }: { defaultType?: 
       setStatus('sent');
       setSent({ type: GIFT_TYPES.find(([id]) => id === data.type)?.[1] ?? '', quantity: String(data.quantity ?? '') });
       dialog.current?.showModal();
+      goal('lead_submit');
     } catch {
       setStatus('error');
     }
