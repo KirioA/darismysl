@@ -4,6 +4,7 @@ import { Wordmark } from './decor';
 import LeadForm from './lead-form';
 import SiteFooter from './site-footer';
 import AfterRequest from './after-request';
+import QuizCta from './quiz-cta';
 import { COMPANY } from './company';
 import { LANDINGS, type Landing } from './landings';
 
@@ -70,7 +71,7 @@ export default function LandingPage({ l }: { l: Landing }) {
               </ul>
               <div className="hero-actions">
                 <a className="btn btn-berry" href="#form">Получить предложение</a>
-                <button type="button" className="link-arrow quiz-link" data-quiz={l.formType}>Собрать набор за 1 минуту</button>
+                <button type="button" className="btn btn-line quiz-btn" data-quiz={l.formType}><img src={`${base}/kit/gift-box.webp`} alt="" aria-hidden="true" />Собрать набор за 1 минуту</button>
               </div>
             </div>
             <div className="lp-art" aria-hidden="true">
@@ -87,6 +88,8 @@ export default function LandingPage({ l }: { l: Landing }) {
             </div>
           </div>
         </section>
+
+        <QuizCta type={l.formType} />
 
         {l.photos && (
           <section className="lp-sec lp-band">

@@ -5,6 +5,7 @@ import { COMPANY } from './company';
 import Motion from './motion';
 import Gifts2D from './gifts-2d';
 import AfterRequest from './after-request';
+import QuizCta from './quiz-cta';
 
 const base = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
 
@@ -156,7 +157,7 @@ export default function Home() {
               </p>
               <div className="hero-actions">
                 <a className="btn btn-berry" href="#contact">Рассчитать набор</a>
-                <button type="button" className="link-arrow quiz-link" data-quiz>Собрать набор за 1 минуту</button>
+                <button type="button" className="btn btn-line quiz-btn" data-quiz><img src={`${base}/kit/gift-box.webp`} alt="" aria-hidden="true" />Собрать набор за 1 минуту</button>
               </div>
             </div>
 
@@ -208,6 +209,8 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        <QuizCta />
 
         <Marquee words="Подарки с логотипом" />
 
