@@ -26,7 +26,7 @@ export const COMPANY = {
   // Google Ads tag (gtag.js); also loads only after consent.
   googleAdsId: 'AW-18506339080' as string | null,
   // Google Ads conversion labels (Goals → Conversions → action → tag setup); fill in when created.
-  adsLeadLabel: null as string | null,
+  adsLeadLabel: 'zwraCPPs1JgdEImwfhE' as string | null,
   cookiePolicyVersion: '2026-10-11',
   // Versions of the legal texts; sent with every request as proof of consent.
   consentVersion: '2026-10-10',
