@@ -1,14 +1,21 @@
+import nodemailer from 'nodemailer';
 import { GIFT_TYPES } from '../../lead-types';
 
-// Sends a site request to the operator's Telegram chat.
-// Needs TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID in the environment (see .env.example).
+// Sends a site request to the operator's Telegram chat and Gmail inbox, in parallel.
+// Env (server: /etc/darismysl.env): TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID and/or
+// GMAIL_USER + GMAIL_APP_PASSWORD (+ optional LEAD_EMAIL_TO, defaults to GMAIL_USER).
+// The request counts as accepted when at least one configured channel delivered it.
 
 const str = (v: unknown, max: number) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 
 export async function POST(req: Request) {
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_CHAT_ID;
-  if (!token || !chatId) return Response.json({ error: 'not configured' }, { status: 503 });
+  const gmailUser = process.env.GMAIL_USER;
+  const gmailPass = process.env.GMAIL_APP_PASSWORD;
+  const hasTelegram = Boolean(token && chatId);
+  const hasMail = Boolean(gmailUser && gmailPass);
+  if (!hasTelegram && !hasMail) return Response.json({ error: 'not configured' }, { status: 503 });
 
   let body: Record<string, unknown>;
   try {
@@ -42,12 +49,36 @@ export async function POST(req: Request) {
     `Согласия: обработка и трансграничная передача, версия ${str(body.consentVersion, 20)}, ${str(body.acceptedAt, 40)}`,
   ];
 
-  const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    // Plain text, no parse_mode: user input cannot inject markup.
-    body: JSON.stringify({ chat_id: chatId, text: lines.join('\n') }),
-  });
-  if (!res.ok) return Response.json({ error: 'telegram failed' }, { status: 502 });
+  const text = lines.join('\n');
+  const sends: Promise<unknown>[] = [];
+  if (hasTelegram) {
+    sends.push(
+      fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        // Plain text, no parse_mode: user input cannot inject markup.
+        body: JSON.stringify({ chat_id: chatId, text }),
+      }).then(r => { if (!r.ok) throw new Error(`telegram ${r.status}`); }),
+    );
+  }
+  if (hasMail) {
+    const mailer = nodemailer.createTransport({ host: 'smtp.gmail.com', port: 465, secure: true, auth: { user: gmailUser, pass: gmailPass } });
+    const quantity = str(body.quantity, 20);
+    sends.push(
+      mailer.sendMail({
+        from: `"Сайт ДариСмысл" <${gmailUser}>`,
+        to: process.env.LEAD_EMAIL_TO || gmailUser,
+        // Header-safe subject: strip line breaks from user input.
+        subject: `Заявка: ${type}${quantity ? `, ${quantity} наб.` : ''} — ${name}`.replace(/[\r\n]+/g, ' '),
+        text,
+        // "Reply" in Gmail goes straight to the client when they left an e-mail.
+        replyTo: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact) ? contact : undefined,
+      }),
+    );
+  }
+
+  const results = await Promise.allSettled(sends);
+  results.forEach(r => { if (r.status === 'rejected') console.error('lead delivery failed:', String(r.reason)); });
+  if (!results.some(r => r.status === 'fulfilled')) return Response.json({ error: 'delivery failed' }, { status: 502 });
   return Response.json({ ok: true });
 }
