@@ -1,0 +1,31 @@
+name: Uptime check
+
+# Every 15 minutes: the site and the lead form endpoint must answer.
+# A failed scheduled run makes GitHub email the repository owner, so no extra service or token is needed.
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Home page answers 200 with the brand
+        run: |
+          set -o pipefail
+          curl -fsS --retry 3 --retry-delay 20 --max-time 20 https://darismysl.by/ | grep -q 'ДариСмысл'
+      - name: Lead endpoint is alive (empty JSON must be rejected with 400, not 5xx)
+        run: |
+          code=$(curl -s -o /dev/null -w '%{http_code}' --retry 3 --retry-delay 20 --max-time 20 \
+            -X POST -H 'content-type: application/json' -d '{}' https://darismysl.by/api/lead)
+          echo "api/lead -> $code"
+          test "$code" = 400
+      - name: Certificate valid for at least 14 more days
+        run: |
+          end=$(echo | openssl s_client -connect darismysl.by:443 -servername darismysl.by 2>/dev/null | openssl x509 -noout -enddate | cut -d= -f2)
+          echo "expires: $end"
+          test $(( ($(date -d "$end" +%s) - $(date +%s)) / 86400 )) -ge 14
