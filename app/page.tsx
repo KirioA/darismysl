@@ -156,7 +156,7 @@ export default function Home() {
               </p>
               <div className="hero-actions">
                 <a className="btn btn-berry" href="#contact">Рассчитать набор</a>
-                <a className="link-arrow" href="#steps">Как мы работаем</a>
+                <button type="button" className="link-arrow quiz-link" data-quiz>Собрать набор за 1 минуту</button>
               </div>
             </div>
 

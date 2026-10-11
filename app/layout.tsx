@@ -8,6 +8,7 @@ import '@fontsource/golos-text/latin-600.css';
 import 'lenis/dist/lenis.css';
 import './globals.css';
 import { COMPANY } from './company';
+import Quiz from './quiz';
 
 const base = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
 const title = 'Новогодние подарочные наборы оптом в Минске и Беларуси — ДариСмысл';
@@ -39,5 +40,5 @@ export const metadata: Metadata = {
 export const viewport: Viewport = { themeColor: '#f6f8f5' };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="ru"><body>{children}</body></html>;
+  return <html lang="ru"><body>{children}<Quiz /></body></html>;
 }

@@ -70,7 +70,7 @@ export default function LandingPage({ l }: { l: Landing }) {
               </ul>
               <div className="hero-actions">
                 <a className="btn btn-berry" href="#form">Получить предложение</a>
-                <a className="link-arrow" href={`tel:${COMPANY.phone}`}>{COMPANY.phoneView}</a>
+                <button type="button" className="link-arrow quiz-link" data-quiz={l.formType}>Собрать набор за 1 минуту</button>
               </div>
             </div>
             <div className="lp-art" aria-hidden="true">
