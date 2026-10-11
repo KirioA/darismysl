@@ -105,7 +105,8 @@ const LD = {
       name: COMPANY.brand,
       legalName: COMPANY.name,
       url: COMPANY.site,
-      logo: `${COMPANY.site}/logo.svg`,
+      logo: `${COMPANY.site}/icon.png`,
+      image: [`${COMPANY.site}/og-square.jpg`, `${COMPANY.site}/og.jpg`],
       telephone: COMPANY.phone,
       taxID: COMPANY.unp,
       address: { '@type': 'PostalAddress', streetAddress: 'ул. Якубова, д. 10', addressLocality: 'Минск', addressCountry: 'BY' },
@@ -114,6 +115,16 @@ const LD = {
       description: 'Новогодние подарочные наборы оптом для компаний и профсоюзов: от 1 набора, логотип на упаковке, бесплатная доставка по Беларуси.',
     },
     { '@type': 'WebSite', '@id': `${COMPANY.site}/#site`, url: `${COMPANY.site}/`, name: COMPANY.brand, alternateName: ['Дари Смысл', 'DariSmysl'], inLanguage: 'ru-BY', publisher: { '@id': `${COMPANY.site}/#org` } },
+    {
+      '@type': 'WebPage',
+      '@id': `${COMPANY.site}/#home`,
+      url: `${COMPANY.site}/`,
+      name: 'ДариСмысл — новогодние подарочные наборы оптом',
+      isPartOf: { '@id': `${COMPANY.site}/#site` },
+      about: { '@id': `${COMPANY.site}/#org` },
+      // Hint for the search thumbnail (otherwise Google picks a random sticker from the page).
+      primaryImageOfPage: { '@type': 'ImageObject', url: `${COMPANY.site}/og-square.jpg`, width: 1200, height: 1200 },
+    },
     {
       '@type': 'FAQPage',
       mainEntity: FAQ.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),

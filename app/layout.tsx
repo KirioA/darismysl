@@ -12,9 +12,10 @@ import Quiz from './quiz';
 import Analytics from './analytics';
 
 const base = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
-const title = 'Новогодние подарочные наборы оптом в Минске и Беларуси — ДариСмысл';
+// Kept under 60 chars so Google shows it as is instead of rewriting it.
+const title = 'ДариСмысл — новогодние подарочные наборы оптом';
 const description =
-  'Корпоративные новогодние подарки для сотрудников, клиентов и детей сотрудников. От 1 набора, логотип на упаковке, состав под бюджет, бесплатная доставка по Беларуси. Заказы до 20 декабря.';
+  'Подарки сотрудникам, клиентам и детям сотрудников. От 1 набора, логотип на упаковке, бесплатная доставка по Беларуси. Заказы до 20 декабря.';
 
 export const metadata: Metadata = {
   // Absolute URLs (canonical, og:image) always point at the main domain, so copies of the site do not compete with it.
@@ -22,7 +23,8 @@ export const metadata: Metadata = {
   title: { default: title, template: `%s — ${COMPANY.brand}` },
   description,
   alternates: { canonical: '/' },
-  robots: { index: true, follow: true },
+  // Large image previews let Google use our branded thumbnail.
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 } },
   openGraph: {
     type: 'website',
     locale: 'ru_BY',
@@ -30,7 +32,10 @@ export const metadata: Metadata = {
     siteName: COMPANY.brand,
     title,
     description,
-    images: [{ url: '/og.jpg', width: 1200, height: 630, alt: 'ДариСмысл — новогодние подарочные наборы оптом' }],
+    images: [
+      { url: '/og.jpg', width: 1200, height: 630, alt: 'ДариСмысл — новогодние подарочные наборы оптом' },
+      { url: '/og-square.jpg', width: 1200, height: 1200, alt: 'ДариСмысл' },
+    ],
   },
   twitter: { card: 'summary_large_image', title, description, images: ['/og.jpg'] },
   // Fill in after adding the site to Yandex Webmaster / Google Search Console.
