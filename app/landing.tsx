@@ -21,7 +21,7 @@ export function landingMetadata(l: Landing): Metadata {
     title: { absolute: `${l.metaTitle} — ${COMPANY.brand}` },
     description: l.metaDescription,
     alternates: { canonical: `/${l.slug}` },
-    openGraph: { type: 'website', locale: 'ru_BY', url: `/${l.slug}`, siteName: COMPANY.brand, title: l.metaTitle, description: l.metaDescription, images: ['/instagram/post1-cover.jpg'] },
+    openGraph: { type: 'website', locale: 'ru_BY', url: `/${l.slug}`, siteName: COMPANY.brand, title: l.metaTitle, description: l.metaDescription, images: [{ url: '/og.jpg', width: 1200, height: 630 }] },
   };
 }
 
