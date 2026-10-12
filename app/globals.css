@@ -517,9 +517,11 @@ img.floater{height:auto}
 .quiz-cta-art::before{content:'';position:absolute;left:50%;top:50%;width:min(300px,92%);aspect-ratio:1;border-radius:50%;transform:translate(-50%,-50%);background:radial-gradient(circle at 50% 40%,#fff,var(--honey-soft) 72%);box-shadow:0 0 0 10px rgba(232,182,84,.35)}
 .quiz-cta-art img{z-index:1}
 .quiz-cta-art img{position:absolute;width:auto;filter:drop-shadow(0 16px 16px rgba(0,0,0,.35))}
-.qa-box{left:18%;bottom:0;height:78%}
+.qa-box{left:18%;bottom:0;height:78%;filter:none}
+/* iOS Safari обрезает drop-shadow у неподвижной картинки по её краям — тень коробки рисуем отдельно */
+.quiz-cta-art::after{content:'';position:absolute;left:22%;bottom:-2%;width:46%;height:10%;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.35),transparent)}
 .qa-1{left:4%;top:4%;height:30%;rotate:-14deg;animation:bobt 4.2s ease-in-out infinite}
 .qa-2{right:4%;top:0;height:38%;rotate:10deg;animation:bobt 5s -1.2s ease-in-out infinite}
 .qa-3{right:10%;bottom:4%;height:30%;animation:bobt 4.6s -2.4s ease-in-out infinite}
-@media(max-width:760px){.quiz-cta-in{grid-template-columns:1fr}.quiz-cta-art{height:200px;max-width:320px}.quiz-cta-btn{width:100%}}
+@media(max-width:760px){.quiz-cta-in{grid-template-columns:1fr}.quiz-cta-art{height:min(300px,82vw);width:100%;max-width:320px;margin:12px auto 0}.quiz-cta-btn{width:100%}}
 @media(prefers-reduced-motion:reduce){.quiz-cta-art img{animation:none}}
